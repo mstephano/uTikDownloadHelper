@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 public class IniFile
 {
@@ -18,6 +19,19 @@ public class IniFile
     private static extern int FlushPrivateProfileString(int lpApplicationName, int lpKeyName, int lpString, string lpFileName);
 
     string strFilename;
+    long iniSize {
+        get
+        {
+            if (File.Exists(strFilename))
+            {
+                return (new FileInfo(strFilename)).Length;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+    }
     // Constructor, accepting a filename
     public IniFile(string Filename)
     {
@@ -35,7 +49,7 @@ public class IniFile
         string functionReturnValue = null;
         // Returns a string from your INI file
         int intCharCount = 0;
-        System.Text.StringBuilder objResult = new System.Text.StringBuilder(256);
+        System.Text.StringBuilder objResult = new System.Text.StringBuilder((int)iniSize);
         intCharCount = GetPrivateProfileString(Section, Key, Default, objResult, objResult.Capacity, strFilename);
         if (intCharCount > 0)
             functionReturnValue = Strings.Left(objResult.ToString(), intCharCount);

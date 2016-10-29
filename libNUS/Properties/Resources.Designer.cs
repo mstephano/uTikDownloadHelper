@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace uTikDownloadHelper.Properties {
+namespace libNUS.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace uTikDownloadHelper.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("uTikDownloadHelper.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("libNUS.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,31 +61,11 @@ namespace uTikDownloadHelper.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon AppIcon {
-            get {
-                object obj = ResourceManager.GetObject("AppIcon", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] vcruntime140 {
+        internal static byte[] WiiUTitleCert {
             get {
-                object obj = ResourceManager.GetObject("vcruntime140", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] wget {
-            get {
-                object obj = ResourceManager.GetObject("wget", resourceCulture);
+                object obj = ResourceManager.GetObject("WiiUTitleCert", resourceCulture);
                 return ((byte[])(obj));
             }
         }

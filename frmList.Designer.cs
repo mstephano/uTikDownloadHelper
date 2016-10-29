@@ -28,10 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmList));
             this.lstMain = new System.Windows.Forms.ListView();
             this.titleID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.region = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.size = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.comboRegion = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnOpen = new System.Windows.Forms.Button();
@@ -49,20 +51,20 @@
             this.lstMain.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.titleID,
             this.name,
-            this.region});
+            this.region,
+            this.size});
             this.lstMain.Enabled = false;
             this.lstMain.FullRowSelect = true;
             this.lstMain.GridLines = true;
             this.lstMain.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lstMain.Location = new System.Drawing.Point(12, 41);
-            this.lstMain.MultiSelect = false;
             this.lstMain.Name = "lstMain";
             this.lstMain.Size = new System.Drawing.Size(801, 498);
             this.lstMain.TabIndex = 0;
             this.lstMain.UseCompatibleStateImageBehavior = false;
             this.lstMain.View = System.Windows.Forms.View.Details;
             this.lstMain.SelectedIndexChanged += new System.EventHandler(this.lstMain_SelectedIndexChanged);
-            this.lstMain.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.handleListItem);
+            this.lstMain.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstMain_MouseDoubleClick);
             // 
             // titleID
             // 
@@ -76,6 +78,10 @@
             // region
             // 
             this.region.Text = "Region";
+            // 
+            // size
+            // 
+            this.size.Text = "Size";
             // 
             // comboRegion
             // 
@@ -118,7 +124,7 @@
             this.btnDownload.TabIndex = 4;
             this.btnDownload.Text = "Download Selected";
             this.btnDownload.UseVisualStyleBackColor = true;
-            this.btnDownload.Click += new System.EventHandler(this.handleListItem);
+            this.btnDownload.Click += new System.EventHandler(this.handleDownload);
             // 
             // txtSearch
             // 
@@ -171,9 +177,10 @@
             this.Controls.Add(this.comboRegion);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lstMain);
+            this.Icon = ((System.Drawing.Icon)(Properties.Resources.AppIcon));
             this.Name = "frmList";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "uTikDownloadHelper";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmList_Closed);
             this.Load += new System.EventHandler(this.frmList_Load);
             this.Shown += new System.EventHandler(this.frmList_Shown);
             this.SizeChanged += new System.EventHandler(this.frmList_SizeChanged);
@@ -195,5 +202,6 @@
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblLoading;
         private System.Windows.Forms.Button btnTitleKeyCheck;
+        private System.Windows.Forms.ColumnHeader size;
     }
 }

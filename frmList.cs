@@ -1,7 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using libNUS.WiiU;
 
 namespace uTikDownloadHelper
 {
@@ -9,15 +15,12 @@ namespace uTikDownloadHelper
     {
         TitleList titles = new TitleList();
         String myExe = System.Reflection.Assembly.GetEntryAssembly().Location;
+        List<TitleInfo> dataSource = new List<TitleInfo> { };
+        Dictionary<string, string> titleSizes = Common.Settings.cachedSizes;
 
         public frmList()
         {
             InitializeComponent();
-        }
-
-        private void frmList_Closed(object sender, EventArgs e)
-        {
-            Application.Exit();
         }
 
         private void populateList()
@@ -35,7 +38,10 @@ namespace uTikDownloadHelper
 
         private void frmList_SizeChanged(object sender, EventArgs e)
         {
-            lstMain.Columns[1].Width = lstMain.Width - lstMain.Columns[0].Width - lstMain.Columns[2].Width - 4 - SystemInformation.VerticalScrollBarWidth;
+            lstMain.BeginUpdate();
+            lstMain.Columns[3].Width = -1;
+            lstMain.Columns[1].Width = lstMain.Width - lstMain.Columns[0].Width - lstMain.Columns[2].Width - lstMain.Columns[3].Width - 4 - SystemInformation.VerticalScrollBarWidth;
+            lstMain.EndUpdate();
         }
 
         private void enableDisableDownloadButton()
@@ -43,13 +49,15 @@ namespace uTikDownloadHelper
             if (lstMain.SelectedItems.Count > 0)
             {
                 btnDownload.Enabled = true;
-            } else
+            }
+            else
             {
                 btnDownload.Enabled = false;
             }
         }
 
-        private void frmList_Load(object sender, EventArgs e) {
+        private void frmList_Load(object sender, EventArgs e)
+        {
             this.lblLoading.Location = lstMain.Location;
             this.lblLoading.Size = lstMain.Size;
             btnTitleKeyCheck.Location = lstMain.Location;
@@ -57,7 +65,7 @@ namespace uTikDownloadHelper
 
             if (Common.Settings.ticketWebsite != null && Common.Settings.ticketWebsite.Length > 0)
                 btnTitleKeyCheck.Dispose();
-            
+
             titles.ListUpdated += (object send, EventArgs ev) =>
             {
                 comboRegion.Items.Clear();
@@ -73,7 +81,8 @@ namespace uTikDownloadHelper
                 if (comboRegion.Items.Contains(lastRegion))
                 {
                     comboRegion.SelectedIndex = comboRegion.Items.IndexOf(lastRegion);
-                } else
+                }
+                else
                 {
                     comboRegion.SelectedIndex = 0;
                 }
@@ -84,11 +93,59 @@ namespace uTikDownloadHelper
             };
         }
 
-        private void frmList_Shown(object sender, EventArgs e)
+        public async Task getSizes(bool skipOnline = true)
+        {
+            foreach (TitleInfo item in titles.titles)
+            {
+                String contentSize;
+                titleSizes.TryGetValue(item.titleID, out contentSize);
+                if (contentSize == null || contentSize.Length == 0)
+                {
+                    if (skipOnline)
+                    {
+                        continue;
+                    }
+                    try
+                    {
+                        contentSize = HelperFunctions.SizeSuffix((await NUS.DownloadTMD(item.titleID)).TitleContentSize);
+                    } catch {
+                        contentSize = "";
+                    }
+                }
+                item.size = contentSize;
+                foreach (ListViewItem row in lstMain.Items)
+                {
+                    if (row.SubItems[0].Text == item.titleID)
+                    {
+                        row.SubItems[3].Text = contentSize;
+                    }
+                }
+                if (!skipOnline)
+                {
+                    if (titleSizes.ContainsKey(item.titleID) == false && contentSize != "")
+                    {
+                        titleSizes.Add(item.titleID, contentSize);
+
+                        Common.Settings.cachedSizes = titleSizes;
+                        frmList_SizeChanged(null, null);
+                    }
+                }
+            }
+            if (skipOnline)
+            {
+                Common.Settings.cachedSizes = titleSizes;
+                frmList_SizeChanged(null, null);
+
+                await getSizes(false);
+            }
+        }
+
+        private async void frmList_Shown(object sender, EventArgs e)
         {
             if (Common.Settings.ticketWebsite != null && Common.Settings.ticketWebsite.Length > 0)
             {
-                titles.getTitleList();
+                await titles.getTitleList();
+                getSizes();
             }
         }
 
@@ -104,34 +161,15 @@ namespace uTikDownloadHelper
             ofdTik.Filter = ".tik File|*.tik";
             if (ofdTik.ShowDialog() == DialogResult.OK)
             {
-                launchSelfWithTicket(ofdTik.FileName);
+                
             }
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
+            lstMain.BeginUpdate();
             populateList();
-        }
-
-        private void launchSelfWithTicket(String ticketPath)
-        {
-            var procStIfo = new ProcessStartInfo(myExe, "\"" + ticketPath + "\"");
-            procStIfo.RedirectStandardOutput = false;
-            procStIfo.UseShellExecute = false;
-            procStIfo.CreateNoWindow = false;
-
-            var proc = new Process();
-            proc.StartInfo = procStIfo;
-            proc.Start();
-        }
-
-        private void handleListItem(object sender, EventArgs e)
-        {
-            if (lstMain.SelectedItems.Count > 0)
-            {
-                TitleInfo info = (TitleInfo)lstMain.SelectedItems[0].Tag;
-                launchSelfWithTicket("https://" + Common.Settings.ticketWebsite + "/ticket/" + info.titleID.ToLower() + ".tik");
-            }
+            lstMain.EndUpdate();
         }
 
         private void lstMain_SelectedIndexChanged(object sender, EventArgs e)
@@ -139,14 +177,60 @@ namespace uTikDownloadHelper
             enableDisableDownloadButton();
         }
 
-        private void btnTitleKeyCheck_Click(object sender, EventArgs e)
+        private void lstMain_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            handleDownload(sender, e);
+        }
+
+        private async void handleDownload(object sender, EventArgs e)
+        {
+            if (lstMain.SelectedItems.Count == 0)
+                return;
+
+            var list = new List<TitleInfo> { };
+            foreach(ListViewItem item in lstMain.SelectedItems)
+            {
+                list.Add(((TitleInfo)item.Tag));
+            }
+
+            AppDomain.CurrentDomain.DoCallBack(() =>
+            {
+                frmDownload frm = new frmDownload();
+                frm.TitleQueue = list;
+                if (list.Count > 1)
+                {
+                    frm.AutoClose = true;
+                    switch ((new DialogTitlePatch()).ShowDialog())
+                    {
+                        case DialogResult.OK: // Game
+                            frm.AutoDownloadType = frmDownload.DownloadType.Game;
+                            break;
+
+                        case DialogResult.Yes: // Path
+                            frm.AutoDownloadType = frmDownload.DownloadType.Update;
+                            break;
+
+                        case DialogResult.No: // Both
+                            frm.AutoDownloadType = frmDownload.DownloadType.Both;
+                            break;
+
+                        default:
+                            return;
+                    }
+                }
+                Program.FormContext.AddForm(frm);
+            });
+        }
+
+        private async void btnTitleKeyCheck_Click(object sender, EventArgs e)
         {
             String website = Microsoft.VisualBasic.Interaction.InputBox("What is the address of this website? \n\nThe Wii U Title Key Database\n\nJust type the hostname, e.g: abc.xyz.com", "Answer this question", "", -1, -1).ToLower();
             if (Common.getMD5Hash(website) == "d098abb93c29005dbd07deb43d81c5df")
             {
-                Common.Settings.ticketWebsite = website;
-                titles.getTitleList();
                 ((Button)sender).Dispose();
+                Common.Settings.ticketWebsite = website;
+                await titles.getTitleList();
+                getSizes();
             }
         }
     }
