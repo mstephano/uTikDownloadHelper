@@ -63,6 +63,11 @@ namespace uTikDownloadHelper
             {
                 output = output.Replace(c.ToString(), replacementChar);
             }
+
+            foreach (char c in "™®")
+            {
+                output = output.Replace(c.ToString(), "");
+            }
             return output;
         }
         public async static Task<byte[]> DownloadTitleKeyWebsiteTicket(string TitleID)
