@@ -49,6 +49,8 @@ namespace uTikDownloadHelper
         private Stopwatch stopwatch2 = new LapStopwatch();
         private long dataDownloadedSinceLastTick = 0;
         private long dataToDownload;
+        private long completeFileDataDownloaded;
+        private FileInfo CurrentFile;
         public frmDownload()
         {
             InitializeComponent();
@@ -59,7 +61,8 @@ namespace uTikDownloadHelper
             if (!Directory.Exists(DownloadPath))
                 return;
 
-            long dirSize = HelperFunctions.DirSize(DownloadPath);
+            CurrentFile.Refresh();
+            long dirSize = completeFileDataDownloaded + CurrentFile.Length;
 
             double progress = (double)dirSize / (double)dataToDownload;
 
@@ -181,12 +184,8 @@ namespace uTikDownloadHelper
         {
             if(DownloadPath == null)
             {
-                folderDialog.SelectedPath = Common.Settings.lastPath;
-                if (folderDialog.ShowDialog() != DialogResult.OK)
+                if (ChooseFolder() == false)
                     return;
-
-                DownloadPath = folderDialog.SelectedPath;
-                Common.Settings.lastPath = folderDialog.SelectedPath;
             }
 
             string basePath = DownloadPath;
@@ -206,23 +205,31 @@ namespace uTikDownloadHelper
             foreach(DownloadItem title in DownloadQueue)
             {
                 count++;
+                completeFileDataDownloaded = 0;
                 this.Text = "(" + count + "/" + DownloadQueue.Count + ")" + title.name;
                 dataDownloadedSinceLastTick = 0;
                 dataToDownload = title.tmd.TitleContentSize;
 
                 var itemPath = HelperFunctions.GetAutoIncrementedDirectory(basePath, title.name);
                 Directory.CreateDirectory(itemPath);
+
+                byte[] ticket = title.ticket;
+                if (title.tmd.TitleID.ToLower()[7] != "e"[0])
+                    HelperFunctions.patchTicket(ref ticket);
+
+                File.WriteAllBytes(Path.Combine(itemPath, "title.tmd"), title.tmd.rawBytes);
+                File.WriteAllBytes(Path.Combine(itemPath, "title.tik"), ticket);
+                File.WriteAllBytes(Path.Combine(itemPath, "title.cert"), NUS.TitleCert);
+
                 DownloadPath = itemPath;
                 bool error = false;
                 stopwatch1.Restart();
                 stopwatch2.Restart();
                 foreach (var url in title.URLs)
                 {
-                    byte[] ticket = title.ticket;
-                    HelperFunctions.patchTicket(ref ticket);
-                    File.WriteAllBytes(Path.Combine(itemPath, "title.tmd"), title.tmd.rawBytes);
-                    File.WriteAllBytes(Path.Combine(itemPath, "title.tik"), ticket);
-                    File.WriteAllBytes(Path.Combine(itemPath, "title.cert"), NUS.TitleCert);
+                    string filePath = Path.Combine(itemPath, url.Filename);
+                    File.Create(filePath).Close();
+                    CurrentFile = new FileInfo(filePath);
                     lblCurrentFile.Text = url.Filename;
                     for (var i = 0; i < Common.Settings.downloadTries; i++)
                     {
@@ -230,7 +237,7 @@ namespace uTikDownloadHelper
 
                             var procStIfo = new ProcessStartInfo();
                             procStIfo.FileName = Program.ResourceFiles.wget;
-                            procStIfo.Arguments = HelperFunctions.escapeCommandArgument(url.URL) + " -c -O " + HelperFunctions.escapeCommandArgument(Path.Combine(itemPath, url.Filename));
+                            procStIfo.Arguments = HelperFunctions.escapeCommandArgument(url.URL) + " -c -O " + HelperFunctions.escapeCommandArgument(filePath);
                             procStIfo.UseShellExecute = shellExecute;
                             procStIfo.CreateNoWindow = hideWget;
 
@@ -254,7 +261,10 @@ namespace uTikDownloadHelper
                     if (isClosing || error)
                         break;
 
+
                     progressTimer_Tick(null, null);
+                    CurrentFile.Refresh();
+                    completeFileDataDownloaded += CurrentFile.Length;
                 }
                 if (error || isClosing)
                 {
@@ -281,6 +291,17 @@ namespace uTikDownloadHelper
             }
             if (AutoClose && !isClosing)
                 Close();
+        }
+
+        public bool ChooseFolder()
+        {
+            folderDialog.SelectedPath = Common.Settings.lastPath;
+            if (folderDialog.ShowDialog() != DialogResult.OK)
+                return false;
+
+            DownloadPath = folderDialog.SelectedPath;
+            Common.Settings.lastPath = folderDialog.SelectedPath;
+            return true;
         }
 
         private void frmDownload_FormClosing(object sender, FormClosingEventArgs e)

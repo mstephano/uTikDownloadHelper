@@ -217,7 +217,10 @@ namespace uTikDownloadHelper
                         default:
                             return;
                     }
+                    if (frm.ChooseFolder() == false)
+                        return;
                 }
+
                 Program.FormContext.AddForm(frm);
             });
         }
