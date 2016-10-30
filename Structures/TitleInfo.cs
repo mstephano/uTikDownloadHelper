@@ -26,7 +26,7 @@ namespace uTikDownloadHelper
         {
             get
             {
-                return name + " (" + region + ")";
+                return name + (region.Length > 0 ? " (" + region + ")" : "");
             }
         }
         public byte[] ticket = new byte[] { };
