@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmList));
             this.lstMain = new System.Windows.Forms.ListView();
             this.titleID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -183,7 +182,7 @@
             this.Controls.Add(this.comboRegion);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lstMain);
-            this.Icon = ((System.Drawing.Icon)(Properties.Resources.AppIcon));
+            this.Icon = global::uTikDownloadHelper.Properties.Resources.AppIcon;
             this.Name = "frmList";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "uTikDownloadHelper";
