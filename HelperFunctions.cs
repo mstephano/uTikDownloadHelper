@@ -70,6 +70,16 @@ namespace uTikDownloadHelper
             }
             return output;
         }
+        public static string getTitleIDFromTicket(byte[] ticket)
+        {
+            string hexID = "";
+
+            for (int i = 0x1DC; i < 0x1DC + 8; i++)
+            {
+                hexID += string.Format("{0:X2}", ticket[i]);
+            }
+            return hexID;
+        }
         public async static Task<byte[]> DownloadTitleKeyWebsiteTicket(string TitleID)
         {
             string url = "https://" + Common.Settings.ticketWebsite + "/ticket/" + TitleID + ".tik";

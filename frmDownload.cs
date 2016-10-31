@@ -56,6 +56,40 @@ namespace uTikDownloadHelper
             InitializeComponent();
         }
 
+        public static void OpenDownloadForm(List<TitleInfo> list)
+        {
+            AppDomain.CurrentDomain.DoCallBack(() =>
+            {
+                frmDownload frm = new frmDownload();
+                frm.TitleQueue = list;
+                if (list.Count > 1)
+                {
+                    frm.AutoClose = true;
+                    switch ((new DialogTitlePatch()).ShowDialog())
+                    {
+                        case DialogResult.OK: // Game
+                            frm.AutoDownloadType = frmDownload.DownloadType.Game;
+                            break;
+
+                        case DialogResult.Yes: // Path
+                            frm.AutoDownloadType = frmDownload.DownloadType.Update;
+                            break;
+
+                        case DialogResult.No: // Both
+                            frm.AutoDownloadType = frmDownload.DownloadType.Both;
+                            break;
+
+                        default:
+                            return;
+                    }
+                    if (frm.ChooseFolder() == false)
+                        return;
+                }
+
+                Program.FormContext.AddForm(frm);
+            });
+        }
+
         private void progressTimer_Tick(object sender, EventArgs e)
         {
             if (!Directory.Exists(DownloadPath))

@@ -55,12 +55,7 @@ namespace uTikDownloadHelper
             }
 
             using (var frm = new frmDownload()){
-                string hexID = "";
-
-                for (int i = 0x1DC; i < 0x1DC + 8; i++)
-                {
-                    hexID += string.Format("{0:X2}", ticket[i]);
-                }
+                string hexID = HelperFunctions.getTitleIDFromTicket(ticket);
                 frm.TitleQueue.Add(new TitleInfo(hexID, "", hexID, "", ""));
                 FormContext.AddForm(frm);
                 Application.Run(FormContext);

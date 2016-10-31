@@ -157,9 +157,19 @@ namespace uTikDownloadHelper
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            if (ofdTik.ShowDialog() == DialogResult.OK)
+            if (ofdTik.ShowDialog() == DialogResult.OK && ofdTik.FileNames.Count() > 0)
             {
-                
+                List<TitleInfo> list = new List<TitleInfo> { };
+                foreach (string filename in ofdTik.FileNames)
+                {
+                    byte[] data = File.ReadAllBytes(filename);
+                    string hexID = HelperFunctions.getTitleIDFromTicket(data);
+                    string basename = System.IO.Path.GetFileNameWithoutExtension(filename);
+                    TitleInfo info = new TitleInfo(hexID, "", (basename.ToLower() != "title" ? hexID + " - " + basename : hexID), "", "");
+                    info.ticket = data;
+                    list.Add(info);
+                }
+                frmDownload.OpenDownloadForm(list);
             }
         }
 
@@ -191,36 +201,7 @@ namespace uTikDownloadHelper
                 list.Add(((TitleInfo)item.Tag));
             }
 
-            AppDomain.CurrentDomain.DoCallBack(() =>
-            {
-                frmDownload frm = new frmDownload();
-                frm.TitleQueue = list;
-                if (list.Count > 1)
-                {
-                    frm.AutoClose = true;
-                    switch ((new DialogTitlePatch()).ShowDialog())
-                    {
-                        case DialogResult.OK: // Game
-                            frm.AutoDownloadType = frmDownload.DownloadType.Game;
-                            break;
-
-                        case DialogResult.Yes: // Path
-                            frm.AutoDownloadType = frmDownload.DownloadType.Update;
-                            break;
-
-                        case DialogResult.No: // Both
-                            frm.AutoDownloadType = frmDownload.DownloadType.Both;
-                            break;
-
-                        default:
-                            return;
-                    }
-                    if (frm.ChooseFolder() == false)
-                        return;
-                }
-
-                Program.FormContext.AddForm(frm);
-            });
+            frmDownload.OpenDownloadForm(list);
         }
 
         private async void btnTitleKeyCheck_Click(object sender, EventArgs e)
