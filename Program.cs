@@ -8,7 +8,6 @@ namespace uTikDownloadHelper
 {
     class Program
     {
-        private static AssemblyResolver resolver = new AssemblyResolver();
         public static ExtractedResources ResourceFiles = new ExtractedResources();
         public static MultiFormContext FormContext = new MultiFormContext();
 
