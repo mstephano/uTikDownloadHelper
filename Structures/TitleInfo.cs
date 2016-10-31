@@ -65,7 +65,7 @@ namespace uTikDownloadHelper
         {
             ListViewItem item = new ListViewItem();
             item.Text = titleID;
-            item.SubItems.Add(name);
+            item.SubItems.Add(name.Replace("\n", " "));
             item.SubItems.Add(region);
             item.SubItems.Add(size);
             item.Tag = this;
