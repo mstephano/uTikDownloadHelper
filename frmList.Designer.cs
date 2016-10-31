@@ -41,6 +41,7 @@
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblLoading = new System.Windows.Forms.Label();
             this.btnTitleKeyCheck = new System.Windows.Forms.Button();
+            this.ofdTik = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
             // lstMain
@@ -164,6 +165,11 @@
             this.btnTitleKeyCheck.UseVisualStyleBackColor = true;
             this.btnTitleKeyCheck.Click += new System.EventHandler(this.btnTitleKeyCheck_Click);
             // 
+            // ofdTik
+            // 
+            this.ofdTik.Filter = ".tik File|*.tik";
+            this.ofdTik.Multiselect = true;
+            // 
             // frmList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -203,5 +209,6 @@
         private System.Windows.Forms.Label lblLoading;
         private System.Windows.Forms.Button btnTitleKeyCheck;
         private System.Windows.Forms.ColumnHeader size;
+        private System.Windows.Forms.OpenFileDialog ofdTik;
     }
 }

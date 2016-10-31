@@ -157,8 +157,6 @@ namespace uTikDownloadHelper
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            OpenFileDialog ofdTik = new OpenFileDialog();
-            ofdTik.Filter = ".tik File|*.tik";
             if (ofdTik.ShowDialog() == DialogResult.OK)
             {
                 
