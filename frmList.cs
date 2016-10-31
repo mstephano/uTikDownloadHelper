@@ -206,7 +206,7 @@ namespace uTikDownloadHelper
 
         private async void btnTitleKeyCheck_Click(object sender, EventArgs e)
         {
-            String website = Microsoft.VisualBasic.Interaction.InputBox("What is the address of this website? \n\nThe Wii U Title Key Database\n\nJust type the hostname, e.g: abc.xyz.com", "Answer this question", "", -1, -1).ToLower();
+            String website = Microsoft.VisualBasic.Interaction.InputBox(LocalStrings.WhatIsTheAddress + "\n\n" + LocalStrings.TitleKeyWebsiteName + "\n\n" + LocalStrings.JustTypeTheHostname, LocalStrings.AnswerThisQuestion, "", -1, -1).ToLower();
             if (Common.getMD5Hash(website) == "d098abb93c29005dbd07deb43d81c5df")
             {
                 ((Button)sender).Dispose();

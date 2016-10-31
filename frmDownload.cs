@@ -318,10 +318,10 @@ namespace uTikDownloadHelper
             DownloadPath = null;
             if(errors.Count > 0)
             {
-                MessageBox.Show("The following title" + (errors.Count > 1 ? "s" : "") + " encountered an error:\n\n" + String.Join("\n", errors.ToArray()), "Error" + (errors.Count > 1 ? "s" : ""), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show((errors.Count > 1 ? LocalStrings.FollowingTitlesEncounteredAnErorr : LocalStrings.FollowingTitleEnounteredAnError) + "\n\n" + String.Join("\n", errors.ToArray()), LocalStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else
             {
-                MessageBox.Show("Downloads completed successfully.", "Success");
+                MessageBox.Show(LocalStrings.DownloadsCompletedSuccessfully, LocalStrings.Success);
             }
             if (AutoClose && !isClosing)
                 Close();
@@ -342,7 +342,7 @@ namespace uTikDownloadHelper
         {
             if (Downloading)
             {
-                if (MessageBox.Show("There are currently downloads in progress, do you want to cancel them?", "Downloads in Progress", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (MessageBox.Show(LocalStrings.DownloadsInProgressCancelQuestion, LocalStrings.DownloadsInProgress, MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     isClosing = true;
                     if (runningProcess != null && runningProcess.HasExited == false)
