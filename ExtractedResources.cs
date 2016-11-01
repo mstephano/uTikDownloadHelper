@@ -3,11 +3,11 @@ using System.IO;
 
 namespace uTikDownloadHelper
 {
-    class ExtractedResources: IDisposable
+    class ExtractedResources
     {
         private static string extractResources()
         {
-            var resourcesDirectory = Path.Combine(System.IO.Path.GetTempPath(), "uTikDownloadHelper." + Path.GetRandomFileName());
+            var resourcesDirectory = Path.Combine(Common.SettingsPath, "app");
             if (!Directory.Exists(resourcesDirectory))
             {
                 Directory.CreateDirectory(resourcesDirectory);
@@ -31,40 +31,5 @@ namespace uTikDownloadHelper
             wget = Path.Combine(extractedResourcesPath, "wget.exe");
             vcruntime140 = Path.Combine(extractedResourcesPath, "vcruntime140.dll");
         }
-        #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    try
-                    {
-                        Directory.Delete(extractedResourcesPath, true);
-                    } catch { }
-                }
-
-                disposedValue = true;
-            }
-        }
-
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~ExtractedResources() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
-
-        // This code added to correctly implement the disposable pattern.
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
-        }
-        #endregion
-
     }
 }

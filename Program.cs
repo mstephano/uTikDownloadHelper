@@ -14,8 +14,6 @@ namespace uTikDownloadHelper
         [STAThread]
         static void Main(string[] args)
         {
-            AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
-
             if (Common.Settings.ticketWebsite == null) Common.Settings.ticketWebsite = "";
 
             if (args.Length == 0)
@@ -69,11 +67,6 @@ namespace uTikDownloadHelper
                 FormContext.AddForm(frm);
                 Application.Run(FormContext);
             }
-        }
-
-        private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
-        {
-            ResourceFiles.Dispose();
         }
     }
 }
