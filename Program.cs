@@ -25,6 +25,16 @@ namespace uTikDownloadHelper
                     FormContext.AddForm(frm);
                     Application.Run(FormContext);
                 }
+                return;
+            }
+
+            if (args[0].ToLower().EndsWith(".tmd"))
+            {
+                if (File.Exists(args[0]))
+                {
+                    frmDownload.DownloadMissing(args[0], true);
+                    Application.Run(FormContext);
+                }
 
                 return;
             }

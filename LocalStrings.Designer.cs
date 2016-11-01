@@ -70,6 +70,15 @@ namespace uTikDownloadHelper {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to delete the incomplete files?.
+        /// </summary>
+        internal static string DeleteIncompleteFilesQuestion {
+            get {
+                return ResourceManager.GetString("DeleteIncompleteFilesQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Downloads completed successfully..
         /// </summary>
         internal static string DownloadsCompletedSuccessfully {
@@ -124,11 +133,29 @@ namespace uTikDownloadHelper {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Incomplete Files.
+        /// </summary>
+        internal static string IncompleteFiles {
+            get {
+                return ResourceManager.GetString("IncompleteFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Just type the hostname, e.g: abc.xyz.com.
         /// </summary>
         internal static string JustTypeTheHostname {
             get {
                 return ResourceManager.GetString("JustTypeTheHostname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repair Failed.
+        /// </summary>
+        internal static string RepairFailed {
+            get {
+                return ResourceManager.GetString("RepairFailed", resourceCulture);
             }
         }
         

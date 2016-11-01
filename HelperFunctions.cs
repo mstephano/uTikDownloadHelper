@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -86,14 +87,27 @@ namespace uTikDownloadHelper
             byte[] data = await (new WebClient()).DownloadDataTaskAsync(new Uri(url));
             return data;
         }
-        public static string GetAutoIncrementedDirectory(string baseDirectory, string name)
+        public static byte[] md5sum(byte[] data)
         {
+            using (MD5 md5Hash = MD5.Create())
+            {
+                return md5Hash.ComputeHash(data);
+            }
+        }
+        public static string GetAutoIncrementedDirectory(string baseDirectory, string name, string existingFile = null, byte[] md5 = null)
+        {
+            MD5 md5Hash = MD5.Create();
             int counter = 0;
             name = ReplaceInvalidFilenameCharacters(name);
             string path = Path.Combine(baseDirectory, name);
             while(File.Exists(path) || Directory.Exists(path))
             {
                 if (Directory.Exists(path) && Directory.GetFiles(path).Count() == 0 && Directory.GetDirectories(path).Count() == 0)
+                    break;
+
+                string targetFilename = Path.Combine(path, existingFile);
+
+                if (existingFile != null && md5 != null && File.Exists(targetFilename) && md5.SequenceEqual(md5Hash.ComputeHash(File.ReadAllBytes(targetFilename))))
                     break;
 
                 counter++;

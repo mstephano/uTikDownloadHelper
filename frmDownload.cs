@@ -18,12 +18,14 @@ namespace uTikDownloadHelper
             public readonly TMD tmd;
             public readonly string name;
             public readonly NUS.UrlFilenamePair[] URLs;
-            public DownloadItem(string name, TMD tmd, NUS.UrlFilenamePair[] URLs, byte[] ticket)
+            public readonly string absolutePath;
+            public DownloadItem(string name, TMD tmd, NUS.UrlFilenamePair[] URLs, byte[] ticket, string absolutePath = null)
             {
                 this.name = name;
                 this.tmd = tmd;
                 this.ticket = ticket;
                 this.URLs = URLs;
+                this.absolutePath = absolutePath;
             }
         }
         public enum DownloadType {
@@ -40,7 +42,7 @@ namespace uTikDownloadHelper
 
         private Process runningProcess;
         private bool isClosing = false;
-        private List<DownloadItem> DownloadQueue = new List<DownloadItem> { };
+        internal List<DownloadItem> DownloadQueue = new List<DownloadItem> { };
         private DownloadItem TitleItem;
         private DownloadItem UpdateItem;
         private bool TitleExists = false;
@@ -54,6 +56,40 @@ namespace uTikDownloadHelper
         public frmDownload()
         {
             InitializeComponent();
+        }
+
+        public static void DownloadMissing(string tmdPath, bool autoClose = false)
+        {
+            if (!File.Exists(tmdPath))
+                return;
+
+            FileInfo info = new FileInfo(tmdPath);
+
+            TMD tmd = new TMD(File.ReadAllBytes(tmdPath));
+            var onlineTMDTask = NUS.DownloadTMD(tmd.TitleID);
+            onlineTMDTask.Wait();
+            TMD onlineTMD = onlineTMDTask.Result;
+
+
+            if (!tmd.rawBytes.SequenceEqual(onlineTMD.rawBytes)) {
+                MessageBox.Show(LocalStrings.RepairFailed, LocalStrings.Error);
+                return;
+            }
+
+            List<DownloadItem> queue = new List<DownloadItem> { };
+            var URLTask = NUS.GetTitleContentURLs(tmd, true);
+            URLTask.Wait();
+            NUS.UrlFilenamePair[] URLs = URLTask.Result;
+
+            AppDomain.CurrentDomain.DoCallBack(() =>
+            {
+                frmDownload frm = new frmDownload();
+                frm.DownloadQueue.Add(new DownloadItem(tmd.TitleID, tmd, URLs, new byte[] { }, info.DirectoryName));
+                frm.AutoClose = autoClose;
+                frm.DownloadPath = info.DirectoryName;
+                frm.lblDownloadingMetadata.Dispose();
+                Program.FormContext.AddForm(frm);
+            });
         }
 
         public static void OpenDownloadForm(List<TitleInfo> list)
@@ -148,7 +184,15 @@ namespace uTikDownloadHelper
         {
             if (TitleQueue.Count == 0)
             {
-                Close();
+                if (DownloadQueue.Count > 0)
+                {
+                    ProcessDownloadQueue(DownloadQueue.ToArray());
+                }
+                else
+                {
+                    Close();
+                }
+
                 return;
             }
 
@@ -219,8 +263,9 @@ namespace uTikDownloadHelper
                 progMain.Value = 0;
                 progMain.Maximum = previousMax;
                 lblDownloadingMetadata.Dispose();
-                ProcessDownloadQueue(DownloadQueue.ToArray());
             }
+            if(DownloadQueue.Count > 0)
+                ProcessDownloadQueue(DownloadQueue.ToArray());
         }
 
         private async void ProcessDownloadQueue(DownloadItem[] items)
@@ -253,16 +298,28 @@ namespace uTikDownloadHelper
                 dataDownloadedSinceLastTick = 0;
                 dataToDownload = title.tmd.TitleContentSize;
 
-                var itemPath = HelperFunctions.GetAutoIncrementedDirectory(basePath, title.name);
-                Directory.CreateDirectory(itemPath);
+                var itemPath = HelperFunctions.GetAutoIncrementedDirectory(basePath, title.name, "title.tmd", HelperFunctions.md5sum(title.tmd.rawBytes));
 
-                byte[] ticket = title.ticket;
-                if (title.tmd.TitleID.ToLower()[7] != "e"[0])
-                    HelperFunctions.patchTicket(ref ticket);
+                if (title.absolutePath != null)
+                    itemPath = title.absolutePath;
+
+                if(!Directory.Exists(itemPath))
+                   Directory.CreateDirectory(itemPath);
+
+                byte[] ticket = (title.ticket != null ? title.ticket : new byte[] { });
 
                 File.WriteAllBytes(Path.Combine(itemPath, "title.tmd"), title.tmd.rawBytes);
-                File.WriteAllBytes(Path.Combine(itemPath, "title.tik"), ticket);
-                File.WriteAllBytes(Path.Combine(itemPath, "title.cert"), NUS.TitleCert);
+
+                if (ticket.Length > 0)
+                {
+                    if (title.tmd.TitleID.ToLower()[7] != "e"[0])
+                        HelperFunctions.patchTicket(ref ticket);
+
+                    File.WriteAllBytes(Path.Combine(itemPath, "title.tik"), ticket);
+                }
+
+                if(!File.Exists(Path.Combine(itemPath, "title.cert")))
+                    File.WriteAllBytes(Path.Combine(itemPath, "title.cert"), NUS.TitleCert);
 
                 DownloadPath = itemPath;
                 bool error = false;
@@ -271,7 +328,9 @@ namespace uTikDownloadHelper
                 foreach (var url in title.URLs)
                 {
                     string filePath = Path.Combine(itemPath, url.Filename);
-                    File.Create(filePath).Close();
+                    if (!File.Exists(filePath))
+                        File.Create(filePath).Close();
+
                     CurrentFile = new FileInfo(filePath);
                     lblCurrentFile.Text = url.Filename;
                     for (var i = 0; i < Common.Settings.downloadTries; i++)
@@ -312,8 +371,11 @@ namespace uTikDownloadHelper
                 if (error || isClosing)
                 {
                     progressTimer.Enabled = false;
-                    Directory.Delete(itemPath, true);
-                    if(!isClosing)
+                    if(title.absolutePath == null)
+                        if(error || MessageBox.Show(LocalStrings.DeleteIncompleteFilesQuestion, LocalStrings.IncompleteFiles, MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            Directory.Delete(itemPath, true);
+
+                    if (!isClosing)
                         errors.Add(title.name);
                 }
                 if (isClosing)

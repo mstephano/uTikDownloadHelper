@@ -120,6 +120,9 @@
   <data name="AnswerThisQuestion" xml:space="preserve">
     <value>Answer this question</value>
   </data>
+  <data name="DeleteIncompleteFilesQuestion" xml:space="preserve">
+    <value>Do you want to delete the incomplete files?</value>
+  </data>
   <data name="DownloadsCompletedSuccessfully" xml:space="preserve">
     <value>Downloads completed successfully.</value>
   </data>
@@ -138,8 +141,14 @@
   <data name="FollowingTitlesEncounteredAnErorr" xml:space="preserve">
     <value>The following titles encountered an erorr:</value>
   </data>
+  <data name="IncompleteFiles" xml:space="preserve">
+    <value>Incomplete Files</value>
+  </data>
   <data name="JustTypeTheHostname" xml:space="preserve">
     <value>Just type the hostname, e.g: abc.xyz.com</value>
+  </data>
+  <data name="RepairFailed" xml:space="preserve">
+    <value>Repair Failed</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>Success</value>
