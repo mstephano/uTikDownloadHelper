@@ -126,7 +126,7 @@
     <value>12, 12</value>
   </data>
   <data name="progMain.Size" type="System.Drawing.Size, System.Drawing">
-    <value>474, 23</value>
+    <value>460, 23</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="progMain.TabIndex" type="System.Int32, mscorlib">
@@ -217,7 +217,7 @@
     <value>False</value>
   </data>
   <data name="btnDownload.Location" type="System.Drawing.Point, System.Drawing">
-    <value>315, 45</value>
+    <value>301, 45</value>
   </data>
   <data name="btnDownload.Size" type="System.Drawing.Size, System.Drawing">
     <value>104, 60</value>
@@ -319,7 +319,7 @@
     <value>False</value>
   </data>
   <data name="chkTitle.Location" type="System.Drawing.Point, System.Drawing">
-    <value>425, 52</value>
+    <value>411, 52</value>
   </data>
   <data name="chkTitle.Size" type="System.Drawing.Size, System.Drawing">
     <value>46, 17</value>
@@ -352,7 +352,7 @@
     <value>False</value>
   </data>
   <data name="chkUpdate.Location" type="System.Drawing.Point, System.Drawing">
-    <value>425, 82</value>
+    <value>411, 82</value>
   </data>
   <data name="chkUpdate.Size" type="System.Drawing.Size, System.Drawing">
     <value>61, 17</value>
@@ -454,7 +454,7 @@
     <value>175, 16</value>
   </data>
   <data name="lblDownloadingMetadata.Size" type="System.Drawing.Size, System.Drawing">
-    <value>146, 15</value>
+    <value>132, 15</value>
   </data>
   <data name="lblDownloadingMetadata.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -556,10 +556,13 @@
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>498, 115</value>
+    <value>484, 115</value>
+  </data>
+  <data name="$this.MaximumSize" type="System.Drawing.Size, System.Drawing">
+    <value>999999, 154</value>
   </data>
   <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
-    <value>441, 141</value>
+    <value>500, 154</value>
   </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterParent</value>
