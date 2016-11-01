@@ -44,6 +44,8 @@
             this.lblAvgTransferRate = new System.Windows.Forms.Label();
             this.folderDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.lblDownloadingMetadata = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.lblTimeRemaining = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // progMain
@@ -112,6 +114,16 @@
             resources.ApplyResources(this.lblDownloadingMetadata, "lblDownloadingMetadata");
             this.lblDownloadingMetadata.Name = "lblDownloadingMetadata";
             // 
+            // label4
+            // 
+            resources.ApplyResources(this.label4, "label4");
+            this.label4.Name = "label4";
+            // 
+            // lblTimeRemaining
+            // 
+            resources.ApplyResources(this.lblTimeRemaining, "lblTimeRemaining");
+            this.lblTimeRemaining.Name = "lblTimeRemaining";
+            // 
             // frmDownload
             // 
             resources.ApplyResources(this, "$this");
@@ -120,9 +132,11 @@
             this.Controls.Add(this.chkUpdate);
             this.Controls.Add(this.chkTitle);
             this.Controls.Add(this.btnDownload);
+            this.Controls.Add(this.lblTimeRemaining);
             this.Controls.Add(this.lblAvgTransferRate);
             this.Controls.Add(this.lblTransferRate);
             this.Controls.Add(this.lblCurrentFile);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -153,5 +167,7 @@
         private System.Windows.Forms.Label lblAvgTransferRate;
         private System.Windows.Forms.FolderBrowserDialog folderDialog;
         private System.Windows.Forms.Label lblDownloadingMetadata;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblTimeRemaining;
     }
 }

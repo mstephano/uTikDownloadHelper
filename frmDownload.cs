@@ -120,7 +120,16 @@ namespace uTikDownloadHelper
             {
                 long avg = Convert.ToInt64((double)dirSize / ((double)stopwatch2.ElapsedMilliseconds / 1000.0));
                 lblAvgTransferRate.Text = HelperFunctions.SizeSuffix(Convert.ToInt64(avg)) + "ps";
+
+                if (avg > 0)
+                {
+                    // Time remaining
+                    TimeSpan remainingDuration = new TimeSpan(0, 0, (int)((dataToDownload - dirSize) / avg));
+                    lblTimeRemaining.Text = remainingDuration.ToString("g");
+                }
             }
+
+            
         }
 
         private void btnDownload_Click(object sender, EventArgs e)
@@ -359,8 +368,8 @@ namespace uTikDownloadHelper
 
         private void frmDownload_Load(object sender, EventArgs e)
         {
-            this.lblDownloadingMetadata.Location = new System.Drawing.Point(12, 47);
-            this.lblDownloadingMetadata.Size = new System.Drawing.Size(400, 46);
+            this.lblDownloadingMetadata.Location = new System.Drawing.Point(12, 38);
+            this.lblDownloadingMetadata.Size = new System.Drawing.Size(474,68);
         }
     }
 }
