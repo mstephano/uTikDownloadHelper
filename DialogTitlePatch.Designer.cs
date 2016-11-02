@@ -74,7 +74,6 @@
             this.Name = "DialogTitlePatch";
             this.Load += new System.EventHandler(this.DialogTitlePatch_Load);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

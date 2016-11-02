@@ -79,8 +79,8 @@
             // 
             // comboRegion
             // 
-            resources.ApplyResources(this.comboRegion, "comboRegion");
             this.comboRegion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            resources.ApplyResources(this.comboRegion, "comboRegion");
             this.comboRegion.FormattingEnabled = true;
             this.comboRegion.Name = "comboRegion";
             this.comboRegion.SelectedIndexChanged += new System.EventHandler(this.comboRegion_SelectedIndexChanged);
