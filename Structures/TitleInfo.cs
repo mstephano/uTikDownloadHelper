@@ -17,11 +17,70 @@ namespace uTikDownloadHelper
     }
     public class TitleInfo
     {
-        public String titleID { get; set; }
-        public String titleKey { get; set; }
-        public String name { get; set; }
-        public String region { get; set; }
-        public String size { get; set; }
+        private String _titleID;
+        private String _titleKey;
+        private String _name;
+        private String _region;
+        private String _size;
+        private ListViewItem listItem;
+
+        public String titleID {
+            get
+            {
+                return _titleID;
+            }
+            set
+            {
+                _titleID = value;
+                UpdateListViewItem();
+            }
+        }
+        public String titleKey {
+            get
+            {
+                return _titleKey;
+            }
+            set
+            {
+                _titleKey = value;
+                UpdateListViewItem();
+            }
+        }
+        public String name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+                UpdateListViewItem();
+            }
+        }
+        public String region
+        {
+            get
+            {
+                return _region;
+            }
+            set
+            {
+                _region = value;
+                UpdateListViewItem();
+            }
+        }
+        public String size {
+            get
+            {
+                return _size;
+            }
+            set
+            {
+                _size = value;
+                UpdateListViewItem();
+            }
+        }
         public String displayName
         {
             get
@@ -29,6 +88,7 @@ namespace uTikDownloadHelper
                 return name + (region.Length > 0 ? " (" + region + ")" : "");
             }
         }
+        
         public byte[] ticket = new byte[] { };
         public string updateID
         {
@@ -61,15 +121,28 @@ namespace uTikDownloadHelper
             this.region = (region != null ? region.Trim() : "");
             this.size = (size != null ? size.Trim() : "");
         }
+        private void UpdateListViewItem()
+        {
+            if (listItem == null)
+                return;
+
+            listItem.SubItems[0].Text = _titleID;
+            listItem.SubItems[1].Text = _name.Replace("\n", " ");
+            listItem.SubItems[2].Text = _region;
+            listItem.SubItems[3].Text = _size;
+        }
         public ListViewItem getListViewItem()
         {
-            ListViewItem item = new ListViewItem();
-            item.Text = titleID;
-            item.SubItems.Add(name.Replace("\n", " "));
-            item.SubItems.Add(region);
-            item.SubItems.Add(size);
-            item.Tag = this;
-            return item;
+            if (listItem != null)
+                return listItem;
+
+            listItem = new ListViewItem();
+            listItem.Text = titleID;
+            listItem.SubItems.Add(name.Replace("\n", " "));
+            listItem.SubItems.Add(region);
+            listItem.SubItems.Add(size);
+            listItem.Tag = this;
+            return listItem;
         }
     }
     

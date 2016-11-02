@@ -113,13 +113,7 @@ namespace uTikDownloadHelper
                     }
                 }
                 item.size = contentSize;
-                foreach (ListViewItem row in lstMain.Items)
-                {
-                    if (row.SubItems[0].Text == item.titleID)
-                    {
-                        row.SubItems[3].Text = contentSize;
-                    }
-                }
+
                 if (!skipOnline)
                 {
                     if (titleSizes.ContainsKey(item.titleID) == false && contentSize != "")
