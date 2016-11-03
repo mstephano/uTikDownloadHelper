@@ -198,6 +198,13 @@ namespace uTikDownloadHelper
             ProcessDownloadQueue(DownloadQueue.ToArray());
         }
 
+        private void adjustProgMainValue(int value)
+        {
+            progMain.Invoke((MethodInvoker)delegate {
+                progMain.Value += value;
+            });
+        }
+
         private async void frmDownload_Shown(object sender, EventArgs e)
         {
             BringToFront();
@@ -234,7 +241,6 @@ namespace uTikDownloadHelper
                         {
                             madeTicket = true;
                             QueueItem.ticket = Ticket.makeTicket(QueueItem.titleID, QueueItem.titleKey, titleTMD.TitleVersion, false, false);
-                            chkTitle.ForeColor = Color.Red;
                         }
 
                         if (QueueItem.ticket.Length > 0)
@@ -243,6 +249,8 @@ namespace uTikDownloadHelper
                             TitleExists = true;
                             chkTitle.Enabled = true;
                             chkTitle.Checked = true;
+                            if(madeTicket)
+                                chkTitle.ForeColor = Color.Red;
                         }
                     }
                     catch { }
@@ -294,66 +302,108 @@ namespace uTikDownloadHelper
                     factor += 1;
 
                 progMain.Maximum = TitleQueue.Count * factor;
-                foreach(TitleInfo title in TitleQueue)
+                List<Action> actions = new List<Action> { };
+                
+                foreach (TitleInfo title in TitleQueue)
                 {
                     if ((AutoDownloadType & DownloadType.Game) != 0)
                     {
-                        if (!title.isUpdate)
+                        actions.Add(() =>
+                        {
+                            if (!title.isUpdate)
+                            {
+                                try
+                                {
+                                    bool madeTicket = false;
+                                    TMD titleTMD = AsyncHelpers.RunSync<TMD>(() => NUS.DownloadTMD(title.titleID));
+
+                                    if (title.ticket.Length == 0 && title.hasTicket)
+                                        title.ticket = AsyncHelpers.RunSync<byte[]>(() => HelperFunctions.DownloadTitleKeyWebsiteTicket(title.titleID));
+
+                                    if (!title.hasTicket && title.titleKey.Length > 0)
+                                    {
+                                        madeTicket = true;
+                                        title.ticket = Ticket.makeTicket(title.titleID, title.titleKey, titleTMD.TitleVersion, false, false);
+                                    }
+
+                                    DownloadQueue.Add(new DownloadItem(title.displayName + (madeTicket ? " (FakeSign)" : ""), titleTMD, AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(titleTMD, true)), title.ticket));
+                                }
+                                catch
+                                {
+                                    missingTitles.Add(title.displayName);
+                                }
+                            }
+                            adjustProgMainValue(1);
+                        });
+                    }
+
+                    if ((AutoDownloadType & DownloadType.DLC) != 0)
+                    {
+                        actions.Add(() =>
                         {
                             try
                             {
-                                bool madeTicket = false;
-                                TMD titleTMD = await NUS.DownloadTMD(title.titleID);
-
-                                if (title.ticket.Length == 0 && title.hasTicket)
-                                    title.ticket = await HelperFunctions.DownloadTitleKeyWebsiteTicket(title.titleID);
-
-                                if (!title.hasTicket && title.titleKey.Length > 0)
+                                if (title.dlcKey.Length > 0)
                                 {
-                                    madeTicket = true;
-                                    title.ticket = Ticket.makeTicket(title.titleID, title.titleKey, titleTMD.TitleVersion, false, false);
-                                }
+                                    TMD dlcTMD = AsyncHelpers.RunSync<TMD>(() => NUS.DownloadTMD(title.dlcID));
 
-                                DownloadQueue.Add(new DownloadItem(title.displayName + (madeTicket ? " (FakeSign)" : ""), titleTMD, await NUS.GetTitleContentURLs(titleTMD, true), title.ticket));
+                                    byte[] ticket = Ticket.makeTicket(title.dlcID, title.titleKey, dlcTMD.TitleVersion, false, false);
+
+                                    DownloadQueue.Add(new DownloadItem(title.DisplayNameWithVersion(dlcTMD.TitleVersion, "DLC") + " (FakeSign)", dlcTMD, AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(dlcTMD, true)), title.ticket));
+                                }
                             }
                             catch
                             {
                                 missingTitles.Add(title.displayName);
                             }
-                        }
-                        progMain.Value++;
-                    }
-
-                    if ((AutoDownloadType & DownloadType.DLC) != 0)
-                    {
-                        try
-                        {
-                            if (title.dlcKey.Length > 0)
-                            {
-                                TMD dlcTMD = await NUS.DownloadTMD(title.dlcID);
-                            
-                                byte[] ticket = Ticket.makeTicket(title.dlcID, title.titleKey, dlcTMD.TitleVersion, false, false);
-
-                                DownloadQueue.Add(new DownloadItem(title.DisplayNameWithVersion(dlcTMD.TitleVersion, "DLC") + " (FakeSign)", dlcTMD, await NUS.GetTitleContentURLs(dlcTMD, true), title.ticket));
-                            }
-                        }
-                        catch
-                        {
-                            missingTitles.Add(title.displayName);
-                        }
-                        progMain.Value++;
+                            adjustProgMainValue(1);
+                        });
                     }
 
                     if ((AutoDownloadType & DownloadType.Update) != 0)
                     {
-                        try
+                        actions.Add(() =>
                         {
-                            TMD updateTMD = await NUS.DownloadTMD(title.updateID);
-                            DownloadQueue.Add(new DownloadItem(title.DisplayNameWithVersion(updateTMD.TitleVersion, "Update"), updateTMD, await NUS.GetTitleContentURLs(updateTMD, true), await NUS.DownloadTicket(title.updateID)));
-                        } catch { }
-                        progMain.Value++;
+                            try
+                            {
+                                TMD updateTMD = AsyncHelpers.RunSync<TMD>(() => NUS.DownloadTMD(title.updateID));
+                                DownloadQueue.Add(new DownloadItem(title.DisplayNameWithVersion(updateTMD.TitleVersion, "Update"), updateTMD, AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(updateTMD, true)), AsyncHelpers.RunSync<byte[]>(() => NUS.DownloadTicket(title.updateID))));
+                            }
+                            catch { }
+                            adjustProgMainValue(1);
+                        });
                     }
                 }
+
+                int runningWorkers = 0;
+                List<Task> workers = new List<Task> { };
+                for(var i = 0; i < 8; i++)
+                {
+                    runningWorkers++;
+                    #pragma warning disable CS4014
+                    Task.Run(() =>
+                    #pragma warning restore CS4014
+                    {
+                        while (actions.Count > 0)
+                        {
+                            var action = actions[0];
+                            actions.Remove(action);
+                            if(action != null)
+                                action();
+                        }
+                        runningWorkers--;
+                    });
+                }
+
+                await Task.Run(() =>
+                {
+                    while (true)
+                    {
+                        if (runningWorkers == 0)
+                            break;
+                    };
+                });
+
                 progMain.Value = 0;
                 progMain.Maximum = previousMax;
                 lblDownloadingMetadata.Dispose();

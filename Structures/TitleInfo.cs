@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.IO;
 
 namespace uTikDownloadHelper
 {
@@ -197,20 +198,62 @@ namespace uTikDownloadHelper
             return titles.Where(title => (title.region == region || region == "Any") && title.name.ToLower().Contains(name.ToLower())).ToList();
         }
 
-        public void titleDataFetched(object sender, DownloadStringCompletedEventArgs e) {
-            
+        public void cacheTickets()
+        {
+            var listCopy = titles.ToList();
+
+            for(var i=0; i<8; i++)
+            {
+                Task.Run(async () =>
+                {
+                    while (listCopy.Count > 0)
+                    {
+                        TitleInfo item = listCopy[0];
+                        listCopy.Remove(item);
+                        if (item.hasTicket)
+                        {
+                            try
+                            {
+                                string tikFilePath = Path.Combine(Common.TicketsPath, item.titleID + ".tik");
+                                if (File.Exists(tikFilePath))
+                                {
+                                    item.ticket = File.ReadAllBytes(tikFilePath);
+                                }
+                                else
+                                {
+                                    byte[] ticket = await HelperFunctions.DownloadTitleKeyWebsiteTicket(item.titleID);
+                                    File.WriteAllBytes(tikFilePath, ticket);
+                                    item.ticket = ticket;
+                                }
+                            }
+                            catch { }
+                        }
+                    }
+                });
+            }
         }
 
         public async Task getTitleList()
         {
             string result;
+            string dataCacheFilename = Path.Combine(Common.CachePath, "json");
 
             try
             {
                 result = await client.DownloadStringTaskAsync(new Uri("http://" + Common.Settings.ticketWebsite + "/json"));
-            } catch
+                File.WriteAllText(dataCacheFilename, result);
+            }
+            catch
             {
-                return;
+                if (File.Exists(dataCacheFilename))
+                {
+                    result = File.ReadAllText(dataCacheFilename);
+                }
+                else
+                {
+
+                    return;
+                }
             }
 
             titles.Clear();
@@ -251,6 +294,8 @@ namespace uTikDownloadHelper
             titles.AddRange(dlc);
 
             titles = titles.OrderBy(o => o.name).ToList();
+
+            cacheTickets();
 
             OnListUpdated();
         }

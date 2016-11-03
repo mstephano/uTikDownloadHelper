@@ -93,45 +93,73 @@ namespace uTikDownloadHelper
             };
         }
 
-        public async Task getSizes(bool skipOnline = true)
+        public void getSizes()
         {
-            foreach (TitleInfo item in titles.titles)
+            var titlesCopy = titles.titles.Where(o => !titleSizes.Keys.Contains(o.titleID)).ToList();
+            var titlesCopy2 = titles.titles.Where(o => titleSizes.Keys.Contains(o.titleID)).ToList();
+            List<Task> workers = new List<Task> { };
+            for (var i=0; i < 8; i++)
             {
-                String contentSize;
-                titleSizes.TryGetValue(item.titleID, out contentSize);
-                if (contentSize == null || contentSize.Length == 0)
-                {
-                    if (skipOnline)
+                Task task = new Task(() => { });
+                task = Task.Run(async () =>{
+                    while(titlesCopy.Count > 0)
                     {
-                        continue;
-                    }
-                    try
-                    {
-                        contentSize = HelperFunctions.SizeSuffix((await NUS.DownloadTMD(item.titleID)).TitleContentSize);
-                    } catch {
-                        contentSize = "";
-                    }
-                }
-                item.size = contentSize;
+                        TitleInfo item = titlesCopy[0];
+                        titlesCopy.Remove(item);
 
-                if (!skipOnline)
-                {
-                    if (titleSizes.ContainsKey(item.titleID) == false && contentSize != "")
-                    {
-                        titleSizes.Add(item.titleID, contentSize);
+                        String contentSize;
+                        titleSizes.TryGetValue(item.titleID, out contentSize);
+                        if (contentSize == null || contentSize.Length == 0)
+                        {
+                            try
+                            {
+                                contentSize = HelperFunctions.SizeSuffix((await NUS.DownloadTMD(item.titleID)).TitleContentSize);
+                            }
+                            catch(Exception ex)
+                            {
+                                Debug.WriteLine(ex?.Message);
+                                Debug.WriteLine(ex?.InnerException?.Message);
+                                contentSize = "";
+                            }
 
-                        Common.Settings.cachedSizes = titleSizes;
-                        frmList_SizeChanged(null, null);
+                            if (titleSizes.ContainsKey(item.titleID) == false && contentSize != "")
+                            {
+                                titleSizes.Add(item.titleID, contentSize);
+                            }
+                        }
+
+                        if(contentSize != "")
+                            this.Invoke((MethodInvoker)delegate
+                            {
+                                item.size = contentSize;
+                                frmList_SizeChanged(null, null);
+                            });
                     }
-                }
+                    workers.Remove(task);
+                });
+                workers.Add(task);
             }
-            if (skipOnline)
+            Task.Run(() =>
             {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    lstMain.BeginUpdate();
+                    foreach (TitleInfo item in titlesCopy2)
+                    {
+                        string size = "";
+                        titleSizes.TryGetValue(item.titleID, out size);
+                        if (size != null)
+                            item.size = size;
+
+                    }
+
+                    frmList_SizeChanged(null, null);
+                    lstMain.EndUpdate();
+                });
+                while (workers.Count > 0) ;
+
                 Common.Settings.cachedSizes = titleSizes;
-                frmList_SizeChanged(null, null);
-
-                await getSizes(false);
-            }
+            });
         }
 
         private async void frmList_Shown(object sender, EventArgs e)

@@ -28,7 +28,7 @@ namespace uTikDownloadHelper
         {
             get
             {
-                return Path.Combine(CachePath, "tickets");
+                return Path.Combine(CachePath, "ticket");
             }
         }
 
