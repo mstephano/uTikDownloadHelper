@@ -156,6 +156,12 @@
   <data name="TitleKeyWebsiteName" xml:space="preserve">
     <value>The Wii U Title Key Database</value>
   </data>
+  <data name="UnableToContactKeyWebsite" xml:space="preserve">
+    <value>Unable to contact the title key website.</value>
+  </data>
+  <data name="ViewingCachedData" xml:space="preserve">
+    <value>You are currently viewing data that was cached the last time the app was run.</value>
+  </data>
   <data name="WhatIsTheAddress" xml:space="preserve">
     <value>What is the address of this website?</value>
   </data>

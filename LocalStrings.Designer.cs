@@ -178,6 +178,24 @@ namespace uTikDownloadHelper {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to contact the title key website..
+        /// </summary>
+        internal static string UnableToContactKeyWebsite {
+            get {
+                return ResourceManager.GetString("UnableToContactKeyWebsite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are currently viewing data that was cached the last time the app was run..
+        /// </summary>
+        internal static string ViewingCachedData {
+            get {
+                return ResourceManager.GetString("ViewingCachedData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to What is the address of this website?.
         /// </summary>
         internal static string WhatIsTheAddress {

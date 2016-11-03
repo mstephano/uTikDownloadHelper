@@ -162,12 +162,24 @@ namespace uTikDownloadHelper
             });
         }
 
+        private async void getTitleList()
+        {
+            var status = await titles.getTitleList();
+            if(status != TitleList.TitleListResult.NotFound)
+                getSizes();
+
+            if (status == TitleList.TitleListResult.Offline)
+                MessageBox.Show(LocalStrings.UnableToContactKeyWebsite + "\n\n" + LocalStrings.ViewingCachedData);
+
+            if (status == TitleList.TitleListResult.NotFound && lblLoading != null)
+                lblLoading.Text = LocalStrings.Error;
+        }
+
         private async void frmList_Shown(object sender, EventArgs e)
         {
             if (Common.Settings.ticketWebsite != null && Common.Settings.ticketWebsite.Length > 0)
             {
-                await titles.getTitleList();
-                getSizes();
+                getTitleList();
             }
         }
 
@@ -229,13 +241,12 @@ namespace uTikDownloadHelper
         private async void btnTitleKeyCheck_Click(object sender, EventArgs e)
         {
             String website = Microsoft.VisualBasic.Interaction.InputBox(LocalStrings.WhatIsTheAddress + "\n\n" + LocalStrings.TitleKeyWebsiteName + "\n\n" + LocalStrings.JustTypeTheHostname, LocalStrings.AnswerThisQuestion, "", -1, -1).ToLower();
-            if (Common.getMD5Hash(website) == "d098abb93c29005dbd07deb43d81c5df")
-            {
-                ((Button)sender).Dispose();
+            if (await HelperFunctions.FileExistsAtURL("http://" + website + "/json")){
                 Common.Settings.ticketWebsite = website;
-                await titles.getTitleList();
-                getSizes();
+                ((Button)sender).Dispose();
+                getTitleList();
             }
+            
         }
     }
 }

@@ -233,9 +233,17 @@ namespace uTikDownloadHelper
             }
         }
 
-        public async Task getTitleList()
+        public enum TitleListResult
+        {
+            Online,
+            Offline,
+            NotFound
+        }
+
+        public async Task<TitleListResult> getTitleList()
         {
             string result;
+            TitleListResult status = TitleListResult.Online;
             string dataCacheFilename = Path.Combine(Common.CachePath, "json");
 
             try
@@ -248,11 +256,11 @@ namespace uTikDownloadHelper
                 if (File.Exists(dataCacheFilename))
                 {
                     result = File.ReadAllText(dataCacheFilename);
+                    status = TitleListResult.Offline;
                 }
                 else
                 {
-
-                    return;
+                    return TitleListResult.NotFound;
                 }
             }
 
@@ -298,6 +306,8 @@ namespace uTikDownloadHelper
             cacheTickets();
 
             OnListUpdated();
+
+            return status;
         }
 
         public event EventHandler ListUpdated;
