@@ -78,6 +78,7 @@
     </Compile>
     <Compile Include="Classes\Common.cs" />
     <Compile Include="Classes\SplitStopwatch.cs" />
+    <Compile Include="Classes\Ticket.cs" />
     <Compile Include="DialogTitlePatch.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -172,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Assets\TicketTemplate" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

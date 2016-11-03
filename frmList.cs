@@ -39,8 +39,8 @@ namespace uTikDownloadHelper
         private void frmList_SizeChanged(object sender, EventArgs e)
         {
             lstMain.BeginUpdate();
-            lstMain.Columns[3].Width = -1;
-            lstMain.Columns[1].Width = lstMain.Width - lstMain.Columns[0].Width - lstMain.Columns[2].Width - lstMain.Columns[3].Width - 4 - SystemInformation.VerticalScrollBarWidth;
+            lstMain.Columns[4].Width = -1;
+            lstMain.Columns[2].Width = lstMain.Width - lstMain.Columns[0].Width - lstMain.Columns[1].Width - lstMain.Columns[3].Width - lstMain.Columns[4].Width - 4 - SystemInformation.VerticalScrollBarWidth;
             lstMain.EndUpdate();
         }
 
@@ -159,7 +159,7 @@ namespace uTikDownloadHelper
                     byte[] data = File.ReadAllBytes(filename);
                     string hexID = HelperFunctions.getTitleIDFromTicket(data);
                     string basename = System.IO.Path.GetFileNameWithoutExtension(filename);
-                    TitleInfo info = new TitleInfo(hexID, "", (basename.ToLower() != "title" ? hexID + " - " + basename : hexID), "", "");
+                    TitleInfo info = new TitleInfo(hexID, "", (basename.ToLower() != "title" ? hexID + " - " + basename : hexID), "", "", true);
                     info.ticket = data;
                     list.Add(info);
                 }

@@ -8,6 +8,7 @@ using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace uTikDownloadHelper
 {
@@ -22,6 +23,7 @@ namespace uTikDownloadHelper
         private String _name;
         private String _region;
         private String _size;
+        private String _dlcKey = "";
         private ListViewItem listItem;
 
         public String titleID {
@@ -43,6 +45,18 @@ namespace uTikDownloadHelper
             set
             {
                 _titleKey = value;
+                UpdateListViewItem();
+            }
+        }
+        public String dlcKey
+        {
+            get
+            {
+                return _dlcKey;
+            }
+            set
+            {
+                _dlcKey = value;
                 UpdateListViewItem();
             }
         }
@@ -88,8 +102,11 @@ namespace uTikDownloadHelper
                 return name + (region.Length > 0 ? " (" + region + ")" : "");
             }
         }
+        public bool hasTicket = false;
         
+
         public byte[] ticket = new byte[] { };
+
         public string updateID
         {
             get
@@ -99,27 +116,44 @@ namespace uTikDownloadHelper
                 return new String(chars);
             }
         }
-        public bool isUpdate {
+        public string gameID
+        {
+            get
+            {
+                var chars = titleID.ToCharArray();
+                chars[7] = "0"[0];
+                return new String(chars);
+            }
+        }
+        public string dlcID
+        {
+            get
+            {
+                var chars = titleID.ToCharArray();
+                chars[7] = "c"[0];
+                return new String(chars);
+            }
+        }
+        public bool isUpdate
+        {
             get
             {
                 return titleID[7] == "e"[0];
             }
         }
-        public string NameWithVersion(int version)
+        public string DisplayNameWithVersion(int version, string typeName)
         {
-            return name + " Update v" + version;
+            return displayName + " " + typeName + " v" + version;
         }
-        public string DisplayNameWithVersion(int version)
-        {
-            return displayName + " Update v" + version;
-        }
-        public TitleInfo(String titleID, String titleKey, String name, String region, String size)
+        public TitleInfo(String titleID, String titleKey, String name, String region, String size, bool hasTicket)
         {
             this.titleID = (titleID != null ? titleID.Trim().ToLower() : "");
             this.titleKey = (titleKey != null ? titleKey.Trim().ToLower() : "");
+
             this.name = (name != null ? name.Trim() : "");
             this.region = (region != null ? region.Trim() : "");
             this.size = (size != null ? size.Trim() : "");
+            this.hasTicket = hasTicket;
         }
         private void UpdateListViewItem()
         {
@@ -127,9 +161,10 @@ namespace uTikDownloadHelper
                 return;
 
             listItem.SubItems[0].Text = _titleID;
-            listItem.SubItems[1].Text = _name.Replace("\n", " ");
-            listItem.SubItems[2].Text = _region;
-            listItem.SubItems[3].Text = _size;
+            listItem.SubItems[1].Text = (dlcKey.Length > 0 ? "X" : "");
+            listItem.SubItems[2].Text = _name.Replace("\n", " ");
+            listItem.SubItems[3].Text = _region;
+            listItem.SubItems[4].Text = _size;
         }
         public ListViewItem getListViewItem()
         {
@@ -138,10 +173,14 @@ namespace uTikDownloadHelper
 
             listItem = new ListViewItem();
             listItem.Text = titleID;
+            listItem.SubItems.Add(dlcKey.Length > 0 ? "X" : "");
             listItem.SubItems.Add(name.Replace("\n", " "));
             listItem.SubItems.Add(region);
             listItem.SubItems.Add(size);
             listItem.Tag = this;
+            if(!this.hasTicket)
+                listItem.ForeColor = Color.Red;
+
             return listItem;
         }
     }
@@ -149,7 +188,7 @@ namespace uTikDownloadHelper
     public class TitleList 
     {
         private WebClient client = new WebClient();
-        private String[] allowedTitleTypes = {"00050000", "0005000C" };
+        private String[] allowedTitleTypes = { "0000", "000c" };
         public List<TitleInfo> titles = new List<TitleInfo> { };
         
 
@@ -180,18 +219,39 @@ namespace uTikDownloadHelper
 
             foreach (dynamic obj in json)
             {
-                if (obj.ticket == "1" && ((String)(obj.titleID)).Length == 16)
+                if (((String)(obj.titleID)).Length == 16)
                 {
-                    TitleInfo info = new TitleInfo((String)(obj.titleID), (String)(obj.titleKey), (String)(obj.name), (String)(obj.region), "");
+                    TitleInfo info = new TitleInfo((String)(obj.titleID), (String)(obj.titleKey), (String)(obj.name), (String)(obj.region), "", obj.ticket == "1");
 
-                    if (info.titleID.Length > 8 && allowedTitleTypes.Contains(info.titleID.Substring(0, 8)))
-
-                        if (info.name.Length > 0)
+                    if (info.titleID.Length == 16 && allowedTitleTypes.Contains(info.titleID.Substring(4, 4)))
                             titles.Add(info);
                 }
             }
 
+            
+            var dlc = titles.Where(o => o.titleID.Substring(4, 4) == "000c").ToList();
+            titles = titles.Where(o => o.titleID.Substring(4, 4) == "0000").ToList();
+
+            foreach(TitleInfo info in dlc.ToArray())
+            {
+                TitleInfo[] existing = titles.Where(o => o.titleID == info.gameID).ToArray();
+
+                if(existing.Length == 0)
+                {
+                    info.titleID = info.gameID;
+                    info.dlcKey = info.titleKey;
+                    info.titleKey = "";
+                } else
+                {
+                    existing[0].dlcKey = info.titleKey;
+                    dlc.Remove(info);
+                }
+            }
+
+            titles.AddRange(dlc);
+
             titles = titles.OrderBy(o => o.name).ToList();
+
             OnListUpdated();
         }
 

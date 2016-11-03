@@ -17,6 +17,20 @@ namespace uTikDownloadHelper
                 return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AssemblyName);
             }
         }
+        public static String CachePath
+        {
+            get
+            {
+                return Path.Combine(SettingsPath, "cache");
+            }
+        }
+        public static String TicketsPath
+        {
+            get
+            {
+                return Path.Combine(CachePath, "tickets");
+            }
+        }
 
         public static string AssemblyName
         {

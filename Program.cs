@@ -14,6 +14,7 @@ namespace uTikDownloadHelper
         [STAThread]
         static void Main(string[] args)
         {
+            Directory.CreateDirectory(Common.TicketsPath);
             if (Common.Settings.ticketWebsite == null) Common.Settings.ticketWebsite = "";
 
             if (args.Length == 0)
@@ -63,7 +64,9 @@ namespace uTikDownloadHelper
 
             using (var frm = new frmDownload()){
                 string hexID = HelperFunctions.getTitleIDFromTicket(ticket);
-                frm.TitleQueue.Add(new TitleInfo(hexID, "", hexID, "", ""));
+                TitleInfo info = new TitleInfo(hexID, "", hexID, "", "", true);
+                info.ticket = ticket;
+                frm.TitleQueue.Add(info);
                 FormContext.AddForm(frm);
                 Application.Run(FormContext);
             }

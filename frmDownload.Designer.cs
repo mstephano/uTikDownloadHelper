@@ -46,6 +46,7 @@
             this.lblDownloadingMetadata = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.lblTimeRemaining = new System.Windows.Forms.Label();
+            this.chkDLC = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // progMain
@@ -71,10 +72,6 @@
             this.btnDownload.Name = "btnDownload";
             this.btnDownload.UseVisualStyleBackColor = true;
             this.btnDownload.Click += new System.EventHandler(this.btnDownload_Click);
-            // 
-            // fbd
-            // 
-            resources.ApplyResources(this.fbd, "fbd");
             // 
             // label2
             // 
@@ -113,10 +110,6 @@
             resources.ApplyResources(this.lblAvgTransferRate, "lblAvgTransferRate");
             this.lblAvgTransferRate.Name = "lblAvgTransferRate";
             // 
-            // folderDialog
-            // 
-            resources.ApplyResources(this.folderDialog, "folderDialog");
-            // 
             // lblDownloadingMetadata
             // 
             resources.ApplyResources(this.lblDownloadingMetadata, "lblDownloadingMetadata");
@@ -132,11 +125,18 @@
             resources.ApplyResources(this.lblTimeRemaining, "lblTimeRemaining");
             this.lblTimeRemaining.Name = "lblTimeRemaining";
             // 
+            // chkDLC
+            // 
+            resources.ApplyResources(this.chkDLC, "chkDLC");
+            this.chkDLC.Name = "chkDLC";
+            this.chkDLC.UseVisualStyleBackColor = true;
+            // 
             // frmDownload
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.lblDownloadingMetadata);
+            this.Controls.Add(this.chkDLC);
             this.Controls.Add(this.chkUpdate);
             this.Controls.Add(this.chkTitle);
             this.Controls.Add(this.btnDownload);
@@ -177,5 +177,6 @@
         private System.Windows.Forms.Label lblDownloadingMetadata;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lblTimeRemaining;
+        private System.Windows.Forms.CheckBox chkDLC;
     }
 }

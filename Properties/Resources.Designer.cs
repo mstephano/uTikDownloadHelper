@@ -73,6 +73,16 @@ namespace uTikDownloadHelper.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] TicketTemplate {
+            get {
+                object obj = ResourceManager.GetObject("TicketTemplate", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] vcruntime140 {
             get {
                 object obj = ResourceManager.GetObject("vcruntime140", resourceCulture);

@@ -42,6 +42,7 @@
             this.lblLoading = new System.Windows.Forms.Label();
             this.btnTitleKeyCheck = new System.Windows.Forms.Button();
             this.ofdTik = new System.Windows.Forms.OpenFileDialog();
+            this.dlc = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // lstMain
@@ -49,6 +50,7 @@
             resources.ApplyResources(this.lstMain, "lstMain");
             this.lstMain.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.titleID,
+            this.dlc,
             this.name,
             this.region,
             this.size});
@@ -128,6 +130,10 @@
             resources.ApplyResources(this.ofdTik, "ofdTik");
             this.ofdTik.Multiselect = true;
             // 
+            // dlc
+            // 
+            resources.ApplyResources(this.dlc, "dlc");
+            // 
             // frmList
             // 
             resources.ApplyResources(this, "$this");
@@ -165,5 +171,6 @@
         private System.Windows.Forms.Button btnTitleKeyCheck;
         private System.Windows.Forms.ColumnHeader size;
         private System.Windows.Forms.OpenFileDialog ofdTik;
+        private System.Windows.Forms.ColumnHeader dlc;
     }
 }

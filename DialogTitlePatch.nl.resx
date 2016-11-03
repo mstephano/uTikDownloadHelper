@@ -120,10 +120,20 @@
   <data name="label1.Text" xml:space="preserve">
     <value>Welk type inhoud wilt u downloaden?</value>
   </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="chkGame.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 17</value>
+  </data>
+  <data name="chkGame.Text" xml:space="preserve">
+    <value>Spel</value>
+  </data>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Annuleer</value>
+  </data>
   <data name="button1.Text" xml:space="preserve">
     <value>Spel</value>
   </data>
-  <data name="button3.Text" xml:space="preserve">
-    <value>Beide</value>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Selecteer Inhoud Soort</value>
   </data>
 </root>

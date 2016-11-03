@@ -128,6 +128,12 @@
   <data name="titleID.Width" type="System.Int32, mscorlib">
     <value>118</value>
   </data>
+  <data name="dlc.Text" xml:space="preserve">
+    <value>DLC</value>
+  </data>
+  <data name="dlc.Width" type="System.Int32, mscorlib">
+    <value>33</value>
+  </data>
   <data name="name.Text" xml:space="preserve">
     <value>Name</value>
   </data>
@@ -409,6 +415,12 @@ Answer this question to enable it.</value>
   </data>
   <data name="&gt;&gt;ofdTik.Type" xml:space="preserve">
     <value>System.Windows.Forms.OpenFileDialog, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;dlc.Name" xml:space="preserve">
+    <value>dlc</value>
+  </data>
+  <data name="&gt;&gt;dlc.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>frmList</value>
