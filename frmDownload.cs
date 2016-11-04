@@ -310,27 +310,28 @@ namespace uTikDownloadHelper
                     {
                         actions.Add(() =>
                         {
-                            if (!title.isUpdate)
+                            TitleInfo info = title;
+                            if (!info.isUpdate)
                             {
                                 try
                                 {
                                     bool madeTicket = false;
-                                    TMD titleTMD = AsyncHelpers.RunSync<TMD>(() => NUS.DownloadTMD(title.titleID));
+                                    TMD titleTMD = AsyncHelpers.RunSync<TMD>(() => NUS.DownloadTMD(info.titleID));
 
-                                    if (title.ticket.Length == 0 && title.hasTicket)
-                                        title.ticket = AsyncHelpers.RunSync<byte[]>(() => HelperFunctions.DownloadTitleKeyWebsiteTicket(title.titleID));
+                                    if (info.ticket.Length == 0 && info.hasTicket)
+                                        info.ticket = AsyncHelpers.RunSync<byte[]>(() => HelperFunctions.DownloadTitleKeyWebsiteTicket(info.titleID));
 
-                                    if (!title.hasTicket && title.titleKey.Length > 0)
+                                    if (!info.hasTicket && info.titleKey.Length > 0)
                                     {
                                         madeTicket = true;
-                                        title.ticket = Ticket.makeTicket(title.titleID, title.titleKey, titleTMD.TitleVersion, false, false);
+                                        info.ticket = Ticket.makeTicket(info.titleID, info.titleKey, titleTMD.TitleVersion, false, false);
                                     }
 
-                                    DownloadQueue.Add(new DownloadItem(title.displayName + (madeTicket ? " (FakeSign)" : ""), titleTMD, AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(titleTMD, true)), title.ticket));
+                                    DownloadQueue.Add(new DownloadItem(info.displayName + (madeTicket ? " (FakeSign)" : ""), titleTMD, AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(titleTMD, true)), info.ticket));
                                 }
                                 catch
                                 {
-                                    missingTitles.Add(title.displayName);
+                                    missingTitles.Add(info.displayName);
                                 }
                             }
                             adjustProgMainValue(1);
@@ -341,20 +342,21 @@ namespace uTikDownloadHelper
                     {
                         actions.Add(() =>
                         {
+                            TitleInfo info = title;
                             try
                             {
-                                if (title.dlcKey.Length > 0)
+                                if (info.dlcKey.Length > 0)
                                 {
-                                    TMD dlcTMD = AsyncHelpers.RunSync<TMD>(() => NUS.DownloadTMD(title.dlcID));
+                                    TMD dlcTMD = AsyncHelpers.RunSync<TMD>(() => NUS.DownloadTMD(info.dlcID));
 
-                                    byte[] ticket = Ticket.makeTicket(title.dlcID, title.titleKey, dlcTMD.TitleVersion, false, false);
+                                    byte[] ticket = Ticket.makeTicket(info.dlcID, info.dlcKey, dlcTMD.TitleVersion, false, false);
 
-                                    DownloadQueue.Add(new DownloadItem(title.DisplayNameWithVersion(dlcTMD.TitleVersion, "DLC") + " (FakeSign)", dlcTMD, AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(dlcTMD, true)), title.ticket));
+                                    DownloadQueue.Add(new DownloadItem(info.DisplayNameWithVersion(dlcTMD.TitleVersion, "DLC") + " (FakeSign)", dlcTMD, AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(dlcTMD, true)), ticket));
                                 }
                             }
                             catch
                             {
-                                missingTitles.Add(title.displayName);
+                                missingTitles.Add(info.displayName);
                             }
                             adjustProgMainValue(1);
                         });
@@ -364,10 +366,11 @@ namespace uTikDownloadHelper
                     {
                         actions.Add(() =>
                         {
+                            TitleInfo info = title;
                             try
                             {
-                                TMD updateTMD = AsyncHelpers.RunSync<TMD>(() => NUS.DownloadTMD(title.updateID));
-                                DownloadQueue.Add(new DownloadItem(title.DisplayNameWithVersion(updateTMD.TitleVersion, "Update"), updateTMD, AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(updateTMD, true)), AsyncHelpers.RunSync<byte[]>(() => NUS.DownloadTicket(title.updateID))));
+                                TMD updateTMD = AsyncHelpers.RunSync<TMD>(() => NUS.DownloadTMD(info.updateID));
+                                DownloadQueue.Add(new DownloadItem(info.DisplayNameWithVersion(updateTMD.TitleVersion, "Update"), updateTMD, AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(updateTMD, true)), AsyncHelpers.RunSync<byte[]>(() => NUS.DownloadTicket(info.updateID))));
                             }
                             catch { }
                             adjustProgMainValue(1);
