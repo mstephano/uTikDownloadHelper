@@ -100,6 +100,11 @@
       <DependentUpon>frmList.cs</DependentUpon>
     </Compile>
     <Compile Include="HelperFunctions.cs" />
+    <Compile Include="LocalStrings.it.Designer.cs">
+      <DependentUpon>LocalStrings.it.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="LocalStrings.fr.Designer.cs">
       <DependentUpon>LocalStrings.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -149,6 +154,9 @@
     <EmbeddedResource Include="DialogTitlePatch.fr.resx">
       <DependentUpon>DialogTitlePatch.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DialogTitlePatch.it.resx">
+      <DependentUpon>DialogTitlePatch.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DialogTitlePatch.nl.resx">
       <DependentUpon>DialogTitlePatch.cs</DependentUpon>
     </EmbeddedResource>
@@ -165,6 +173,9 @@
       <DependentUpon>frmDownload.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmDownload.fr.resx">
+      <DependentUpon>frmDownload.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmDownload.it.resx">
       <DependentUpon>frmDownload.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmDownload.nl.resx">
@@ -185,6 +196,9 @@
     <EmbeddedResource Include="frmList.fr.resx">
       <DependentUpon>frmList.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmList.it.resx">
+      <DependentUpon>frmList.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmList.nl.resx">
       <DependentUpon>frmList.cs</DependentUpon>
     </EmbeddedResource>
@@ -193,6 +207,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmList.zh-Hans.resx">
       <DependentUpon>frmList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LocalStrings.it.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LocalStrings.it.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="LocalStrings.fr.resx">
       <Generator>ResXFileCodeGenerator</Generator>
