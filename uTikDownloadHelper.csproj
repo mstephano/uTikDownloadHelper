@@ -105,6 +105,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="LocalStrings.zh-Hant.Designer.cs">
+      <DependentUpon>LocalStrings.zh-Hant.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="LocalStrings.nl.Designer.cs">
       <DependentUpon>LocalStrings.nl.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -137,6 +142,9 @@
     <EmbeddedResource Include="DialogTitlePatch.zh-Hans.resx">
       <DependentUpon>DialogTitlePatch.cs</DependentUpon>
     </EmbeddedResource>
+	<EmbeddedResource Include="DialogTitlePatch.zh-Hant.resx">
+      <DependentUpon>DialogTitlePatch.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmDownload.nl.resx">
       <DependentUpon>frmDownload.cs</DependentUpon>
     </EmbeddedResource>
@@ -144,6 +152,9 @@
       <DependentUpon>frmDownload.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmDownload.zh-Hans.resx">
+      <DependentUpon>frmDownload.cs</DependentUpon>
+    </EmbeddedResource>
+	<EmbeddedResource Include="frmDownload.zh-Hant.resx">
       <DependentUpon>frmDownload.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmList.nl.resx">
@@ -158,6 +169,13 @@
     <EmbeddedResource Include="LocalStrings.zh-Hans.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalStrings.zh-Hans.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+	<EmbeddedResource Include="frmList.zh-Hant.resx">
+      <DependentUpon>frmList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LocalStrings.zh-Hant.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LocalStrings.zh-Hant.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="LocalStrings.nl.resx">
       <Generator>ResXFileCodeGenerator</Generator>
