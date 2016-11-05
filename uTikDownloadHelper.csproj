@@ -110,6 +110,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="LocalStrings.es.Designer.cs">
+      <DependentUpon>LocalStrings.es.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="LocalStrings.nl.Designer.cs">
       <DependentUpon>LocalStrings.nl.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -133,6 +138,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\IniFile.cs" />
+    <EmbeddedResource Include="DialogTitlePatch.es.resx">
+      <DependentUpon>DialogTitlePatch.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DialogTitlePatch.nl.resx">
       <DependentUpon>DialogTitlePatch.cs</DependentUpon>
     </EmbeddedResource>
@@ -145,6 +153,9 @@
 	<EmbeddedResource Include="DialogTitlePatch.zh-Hant.resx">
       <DependentUpon>DialogTitlePatch.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmDownload.es.resx">
+      <DependentUpon>frmDownload.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmDownload.nl.resx">
       <DependentUpon>frmDownload.cs</DependentUpon>
     </EmbeddedResource>
@@ -156,6 +167,9 @@
     </EmbeddedResource>
 	<EmbeddedResource Include="frmDownload.zh-Hant.resx">
       <DependentUpon>frmDownload.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmList.es.resx">
+      <DependentUpon>frmList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmList.nl.resx">
       <DependentUpon>frmList.cs</DependentUpon>
@@ -176,6 +190,10 @@
     <EmbeddedResource Include="LocalStrings.zh-Hant.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalStrings.zh-Hant.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LocalStrings.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LocalStrings.es.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="LocalStrings.nl.resx">
       <Generator>ResXFileCodeGenerator</Generator>
