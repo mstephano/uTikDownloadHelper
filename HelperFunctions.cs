@@ -126,32 +126,35 @@ namespace uTikDownloadHelper
         }
         public static async Task<bool> FileExistsAtURL(String url)
         {
-            HttpWebResponse response = null;
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "HEAD";
-            request.AllowAutoRedirect = true;
-            request.MaximumAutomaticRedirections = 10;
+            return await Task.Run<bool>(() =>
+            {
+                HttpWebResponse response = null;
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "HEAD";
+                request.AllowAutoRedirect = true;
+                request.MaximumAutomaticRedirections = 10;
 
-            var exists = false;
+                var exists = false;
 
-            try
-            {
-                response = (HttpWebResponse)request.GetResponse();
-                exists = true;
-            }
-            catch (WebException ex)
-            {
-                /* A WebException will be thrown if the status of the response is not `200 OK` */
-            }
-            finally
-            {
-                // Don't forget to close your response.
-                if (response != null)
+                try
                 {
-                    response.Close();
+                    response = (HttpWebResponse)request.GetResponse();
+                    exists = true;
                 }
-            }
-            return exists;
+                catch
+                {
+                    /* A WebException will be thrown if the status of the response is not `200 OK` */
+                }
+                finally
+                {
+                    // Don't forget to close your response.
+                    if (response != null)
+                    {
+                        response.Close();
+                    }
+                }
+                return exists;
+            });
         }
     }
 }

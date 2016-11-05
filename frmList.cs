@@ -100,12 +100,18 @@ namespace uTikDownloadHelper
             List<Task> workers = new List<Task> { };
             for (var i=0; i < 8; i++)
             {
-                Task task = new Task(() => { });
-                task = Task.Run(async () =>{
-                    while(titlesCopy.Count > 0)
+                Task.Run(async () =>{
+                    while(true)
                     {
-                        TitleInfo item = titlesCopy[0];
-                        titlesCopy.Remove(item);
+                        TitleInfo item;
+                        lock (titlesCopy)
+                        {
+                            if (titlesCopy.Count == 0)
+                                break;
+                            
+                            item = titlesCopy[0];
+                            titlesCopy.RemoveAt(0);
+                        }
 
                         String contentSize;
                         titleSizes.TryGetValue(item.titleID, out contentSize);
@@ -135,9 +141,7 @@ namespace uTikDownloadHelper
                                 frmList_SizeChanged(null, null);
                             });
                     }
-                    workers.Remove(task);
                 });
-                workers.Add(task);
             }
             Task.Run(() =>
             {
@@ -175,7 +179,7 @@ namespace uTikDownloadHelper
                 lblLoading.Text = LocalStrings.Error;
         }
 
-        private async void frmList_Shown(object sender, EventArgs e)
+        private void frmList_Shown(object sender, EventArgs e)
         {
             if (Common.Settings.ticketWebsite != null && Common.Settings.ticketWebsite.Length > 0)
             {
@@ -224,7 +228,7 @@ namespace uTikDownloadHelper
             handleDownload(sender, e);
         }
 
-        private async void handleDownload(object sender, EventArgs e)
+        private void handleDownload(object sender, EventArgs e)
         {
             if (lstMain.SelectedItems.Count == 0)
                 return;
@@ -241,12 +245,12 @@ namespace uTikDownloadHelper
         private async void btnTitleKeyCheck_Click(object sender, EventArgs e)
         {
             String website = Microsoft.VisualBasic.Interaction.InputBox(LocalStrings.WhatIsTheAddress + "\n\n" + LocalStrings.TitleKeyWebsiteName + "\n\n" + LocalStrings.JustTypeTheHostname, LocalStrings.AnswerThisQuestion, "", -1, -1).ToLower();
-            if (await HelperFunctions.FileExistsAtURL("http://" + website + "/json")){
+            
+            if (Common.getMD5Hash(website) == "d098abb93c29005dbd07deb43d81c5df") {
                 Common.Settings.ticketWebsite = website;
                 ((Button)sender).Dispose();
                 getTitleList();
             }
-            
         }
     }
 }

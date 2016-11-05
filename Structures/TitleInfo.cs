@@ -126,6 +126,16 @@ namespace uTikDownloadHelper
                 return new String(chars);
             }
         }
+        public byte[] getDLCTicket(int version)
+        {
+            return Ticket.makeTicket(dlcID, dlcKey, version, false, false);
+        }
+
+        public byte[] getGeneratedTitleTicket(int version)
+        {
+            return Ticket.makeTicket(titleID, titleKey, version, false, false);
+        }
+
         public string dlcID
         {
             get
@@ -206,10 +216,19 @@ namespace uTikDownloadHelper
             {
                 Task.Run(async () =>
                 {
-                    while (listCopy.Count > 0)
+                    while (true)
                     {
-                        TitleInfo item = listCopy[0];
-                        listCopy.Remove(item);
+                        TitleInfo item;
+
+                        lock (listCopy)
+                        {
+                            if (listCopy.Count == 0)
+                                break;
+
+                            item = listCopy[0];
+                            listCopy.Remove(item);
+                        }
+
                         if (item.hasTicket)
                         {
                             try
