@@ -80,58 +80,58 @@
     <Compile Include="Classes\Common.cs" />
     <Compile Include="Classes\SplitStopwatch.cs" />
     <Compile Include="Classes\Ticket.cs" />
-    <Compile Include="DialogTitlePatch.cs">
+    <Compile Include="Forms\DialogTitlePatch.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DialogTitlePatch.Designer.cs">
+    <Compile Include="Forms\DialogTitlePatch.Designer.cs">
       <DependentUpon>DialogTitlePatch.cs</DependentUpon>
     </Compile>
     <Compile Include="ExtractedResources.cs" />
-    <Compile Include="frmDownload.cs">
+    <Compile Include="Forms\frmDownload.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmDownload.Designer.cs">
+    <Compile Include="Forms\frmDownload.Designer.cs">
       <DependentUpon>frmDownload.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmList.cs">
+    <Compile Include="Forms\frmList.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmList.Designer.cs">
+    <Compile Include="Forms\frmList.Designer.cs">
       <DependentUpon>frmList.cs</DependentUpon>
     </Compile>
     <Compile Include="HelperFunctions.cs" />
-    <Compile Include="LocalStrings.de.Designer.cs">
-      <DependentUpon>LocalStrings.de.resx</DependentUpon>
+    <Compile Include="Localization\Strings.de.Designer.cs">
+      <DependentUpon>Strings.de.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="LocalStrings.it.Designer.cs">
-      <DependentUpon>LocalStrings.it.resx</DependentUpon>
+    <Compile Include="Localization\Strings.it.Designer.cs">
+      <DependentUpon>Strings.it.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="LocalStrings.fr.Designer.cs">
-      <DependentUpon>LocalStrings.fr.resx</DependentUpon>
+    <Compile Include="Localization\Strings.fr.Designer.cs">
+      <DependentUpon>Strings.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="LocalStrings.zh-Hans.Designer.cs">
-      <DependentUpon>LocalStrings.zh-Hans.resx</DependentUpon>
+    <Compile Include="Localization\Strings.zh-Hans.Designer.cs">
+      <DependentUpon>Strings.zh-Hans.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="LocalStrings.zh-Hant.Designer.cs">
-      <DependentUpon>LocalStrings.zh-Hant.resx</DependentUpon>
+    <Compile Include="Localization\Strings.zh-Hant.Designer.cs">
+      <DependentUpon>Strings.zh-Hant.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="LocalStrings.es.Designer.cs">
-      <DependentUpon>LocalStrings.es.resx</DependentUpon>
+    <Compile Include="Localization\Strings.es.Designer.cs">
+      <DependentUpon>Strings.es.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="LocalStrings.nl.Designer.cs">
-      <DependentUpon>LocalStrings.nl.resx</DependentUpon>
+    <Compile Include="Localization\Strings.nl.Designer.cs">
+      <DependentUpon>Strings.nl.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -144,123 +144,123 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Classes\Settings.cs" />
-    <Compile Include="LocalStrings.Designer.cs">
+    <Compile Include="Localization\Strings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>LocalStrings.resx</DependentUpon>
+      <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
     <Compile Include="Structures\TitleInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\IniFile.cs" />
-    <EmbeddedResource Include="DialogTitlePatch.de.resx">
+    <EmbeddedResource Include="Forms\DialogTitlePatch.de.resx">
       <DependentUpon>DialogTitlePatch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DialogTitlePatch.es.resx">
+    <EmbeddedResource Include="Forms\DialogTitlePatch.es.resx">
       <DependentUpon>DialogTitlePatch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DialogTitlePatch.fr.resx">
+    <EmbeddedResource Include="Forms\DialogTitlePatch.fr.resx">
       <DependentUpon>DialogTitlePatch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DialogTitlePatch.it.resx">
+    <EmbeddedResource Include="Forms\DialogTitlePatch.it.resx">
       <DependentUpon>DialogTitlePatch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DialogTitlePatch.nl.resx">
+    <EmbeddedResource Include="Forms\DialogTitlePatch.nl.resx">
       <DependentUpon>DialogTitlePatch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DialogTitlePatch.resx">
+    <EmbeddedResource Include="Forms\DialogTitlePatch.resx">
       <DependentUpon>DialogTitlePatch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DialogTitlePatch.zh-Hans.resx">
+    <EmbeddedResource Include="Forms\DialogTitlePatch.zh-Hans.resx">
       <DependentUpon>DialogTitlePatch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DialogTitlePatch.zh-Hant.resx">
+    <EmbeddedResource Include="Forms\DialogTitlePatch.zh-Hant.resx">
       <DependentUpon>DialogTitlePatch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmDownload.de.resx">
+    <EmbeddedResource Include="Forms\frmDownload.de.resx">
       <DependentUpon>frmDownload.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmDownload.es.resx">
+    <EmbeddedResource Include="Forms\frmDownload.es.resx">
       <DependentUpon>frmDownload.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmDownload.fr.resx">
+    <EmbeddedResource Include="Forms\frmDownload.fr.resx">
       <DependentUpon>frmDownload.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmDownload.it.resx">
+    <EmbeddedResource Include="Forms\frmDownload.it.resx">
       <DependentUpon>frmDownload.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmDownload.nl.resx">
+    <EmbeddedResource Include="Forms\frmDownload.nl.resx">
       <DependentUpon>frmDownload.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmDownload.resx">
+    <EmbeddedResource Include="Forms\frmDownload.resx">
       <DependentUpon>frmDownload.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmDownload.zh-Hans.resx">
+    <EmbeddedResource Include="Forms\frmDownload.zh-Hans.resx">
       <DependentUpon>frmDownload.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmDownload.zh-Hant.resx">
+    <EmbeddedResource Include="Forms\frmDownload.zh-Hant.resx">
       <DependentUpon>frmDownload.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmList.de.resx">
+    <EmbeddedResource Include="Forms\frmList.de.resx">
       <DependentUpon>frmList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmList.es.resx">
+    <EmbeddedResource Include="Forms\frmList.es.resx">
       <DependentUpon>frmList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmList.fr.resx">
+    <EmbeddedResource Include="Forms\frmList.fr.resx">
       <DependentUpon>frmList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmList.it.resx">
+    <EmbeddedResource Include="Forms\frmList.it.resx">
       <DependentUpon>frmList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmList.nl.resx">
+    <EmbeddedResource Include="Forms\frmList.nl.resx">
       <DependentUpon>frmList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmList.resx">
+    <EmbeddedResource Include="Forms\frmList.resx">
       <DependentUpon>frmList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmList.zh-Hans.resx">
+    <EmbeddedResource Include="Forms\frmList.zh-Hans.resx">
       <DependentUpon>frmList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LocalStrings.de.resx">
+    <EmbeddedResource Include="Localization\Strings.de.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LocalStrings.de.Designer.cs</LastGenOutput>
+      <LastGenOutput>Strings.de.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="LocalStrings.it.resx">
+    <EmbeddedResource Include="Localization\Strings.it.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LocalStrings.it.Designer.cs</LastGenOutput>
+      <LastGenOutput>Strings.it.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="LocalStrings.fr.resx">
+    <EmbeddedResource Include="Localization\Strings.fr.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LocalStrings.fr.Designer.cs</LastGenOutput>
+      <LastGenOutput>Strings.fr.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="LocalStrings.zh-Hans.resx">
+    <EmbeddedResource Include="Localization\Strings.zh-Hans.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LocalStrings.zh-Hans.Designer.cs</LastGenOutput>
+      <LastGenOutput>Strings.zh-Hans.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmList.zh-Hant.resx">
+    <EmbeddedResource Include="Forms\frmList.zh-Hant.resx">
       <DependentUpon>frmList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LocalStrings.zh-Hant.resx">
+    <EmbeddedResource Include="Localization\Strings.zh-Hant.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LocalStrings.zh-Hant.Designer.cs</LastGenOutput>
+      <LastGenOutput>Strings.zh-Hant.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="LocalStrings.es.resx">
+    <EmbeddedResource Include="Localization\Strings.es.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LocalStrings.es.Designer.cs</LastGenOutput>
+      <LastGenOutput>Strings.es.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="LocalStrings.nl.resx">
+    <EmbeddedResource Include="Localization\Strings.nl.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LocalStrings.nl.Designer.cs</LastGenOutput>
+      <LastGenOutput>Strings.nl.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="LocalStrings.resx">
+    <EmbeddedResource Include="Localization\Strings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LocalStrings.Designer.cs</LastGenOutput>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

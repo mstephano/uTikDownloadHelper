@@ -173,10 +173,10 @@ namespace uTikDownloadHelper
                 getSizes();
 
             if (status == TitleList.TitleListResult.Offline)
-                MessageBox.Show(LocalStrings.UnableToContactKeyWebsite + "\n\n" + LocalStrings.ViewingCachedData);
+                MessageBox.Show(Localization.Strings.UnableToContactKeyWebsite + "\n\n" + Localization.Strings.ViewingCachedData);
 
             if (status == TitleList.TitleListResult.NotFound && lblLoading != null)
-                lblLoading.Text = LocalStrings.Error;
+                lblLoading.Text = Localization.Strings.Error;
         }
 
         private void frmList_Shown(object sender, EventArgs e)
@@ -244,7 +244,7 @@ namespace uTikDownloadHelper
 
         private async void btnTitleKeyCheck_Click(object sender, EventArgs e)
         {
-            String website = Microsoft.VisualBasic.Interaction.InputBox(LocalStrings.WhatIsTheAddress + "\n\n" + LocalStrings.TitleKeyWebsiteName + "\n\n" + LocalStrings.JustTypeTheHostname, LocalStrings.AnswerThisQuestion, "", -1, -1).ToLower();
+            String website = Microsoft.VisualBasic.Interaction.InputBox(Localization.Strings.WhatIsTheAddress + "\n\n" + Localization.Strings.TitleKeyWebsiteName + "\n\n" + Localization.Strings.JustTypeTheHostname, Localization.Strings.AnswerThisQuestion, "", -1, -1).ToLower();
             
             if (Common.getMD5Hash(website) == "d098abb93c29005dbd07deb43d81c5df") {
                 Common.Settings.ticketWebsite = website;

@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmList));
             this.lstMain = new System.Windows.Forms.ListView();
             this.titleID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.dlc = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.region = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.size = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -42,7 +43,6 @@
             this.lblLoading = new System.Windows.Forms.Label();
             this.btnTitleKeyCheck = new System.Windows.Forms.Button();
             this.ofdTik = new System.Windows.Forms.OpenFileDialog();
-            this.dlc = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // lstMain
@@ -67,6 +67,10 @@
             // 
             resources.ApplyResources(this.titleID, "titleID");
             // 
+            // dlc
+            // 
+            resources.ApplyResources(this.dlc, "dlc");
+            // 
             // name
             // 
             resources.ApplyResources(this.name, "name");
@@ -81,8 +85,8 @@
             // 
             // comboRegion
             // 
-            this.comboRegion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             resources.ApplyResources(this.comboRegion, "comboRegion");
+            this.comboRegion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboRegion.FormattingEnabled = true;
             this.comboRegion.Name = "comboRegion";
             this.comboRegion.SelectedIndexChanged += new System.EventHandler(this.comboRegion_SelectedIndexChanged);
@@ -129,10 +133,6 @@
             // 
             resources.ApplyResources(this.ofdTik, "ofdTik");
             this.ofdTik.Multiselect = true;
-            // 
-            // dlc
-            // 
-            resources.ApplyResources(this.dlc, "dlc");
             // 
             // frmList
             // 

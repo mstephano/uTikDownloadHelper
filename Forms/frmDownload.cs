@@ -81,7 +81,7 @@ namespace uTikDownloadHelper
 
 
             if (!tmd.rawBytes.SequenceEqual(onlineTMD.rawBytes)) {
-                MessageBox.Show(LocalStrings.RepairFailed, LocalStrings.Error);
+                MessageBox.Show(Localization.Strings.RepairFailed, Localization.Strings.Error);
                 return;
             }
 
@@ -396,6 +396,8 @@ namespace uTikDownloadHelper
                             bool madeTicket = false;
                             TMD titleTMD = AsyncHelpers.RunSync<TMD>(() => NUS.DownloadTMD(info.titleID));
 
+                            ticket = info.ticket;
+
                             if (info.ticket.Length == 0 && info.hasTicket)
                                 ticket = AsyncHelpers.RunSync<byte[]>(() => HelperFunctions.DownloadTitleKeyWebsiteTicket(info.titleID));
 
@@ -544,7 +546,7 @@ namespace uTikDownloadHelper
                 {
                     progressTimer.Enabled = false;
                     if(title.absolutePath == null)
-                        if(error || MessageBox.Show(LocalStrings.DeleteIncompleteFilesQuestion, LocalStrings.IncompleteFiles, MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        if(error || MessageBox.Show(Localization.Strings.DeleteIncompleteFilesQuestion, Localization.Strings.IncompleteFiles, MessageBoxButtons.YesNo) == DialogResult.Yes)
                             Directory.Delete(itemPath, true);
 
                     if (!isClosing)
@@ -561,10 +563,10 @@ namespace uTikDownloadHelper
             DownloadPath = null;
             if(errors.Count > 0)
             {
-                MessageBox.Show((errors.Count > 1 ? LocalStrings.FollowingTitlesEncounteredAnErorr : LocalStrings.FollowingTitleEnounteredAnError) + "\n\n" + String.Join("\n", errors.ToArray()), LocalStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show((errors.Count > 1 ? Localization.Strings.FollowingTitlesEncounteredAnErorr : Localization.Strings.FollowingTitleEnounteredAnError) + "\n\n" + String.Join("\n", errors.ToArray()), Localization.Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else
             {
-                MessageBox.Show(LocalStrings.DownloadsCompletedSuccessfully, LocalStrings.Success);
+                MessageBox.Show(Localization.Strings.DownloadsCompletedSuccessfully, Localization.Strings.Success);
             }
             btnDownload.Enabled = true;
             if (AutoClose && !isClosing)
@@ -586,7 +588,7 @@ namespace uTikDownloadHelper
         {
             if (Downloading)
             {
-                if (MessageBox.Show(LocalStrings.DownloadsInProgressCancelQuestion, LocalStrings.DownloadsInProgress, MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (MessageBox.Show(Localization.Strings.DownloadsInProgressCancelQuestion, Localization.Strings.DownloadsInProgress, MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     isClosing = true;
                     if (runningProcess != null && runningProcess.HasExited == false)
