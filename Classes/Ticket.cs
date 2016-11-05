@@ -93,7 +93,7 @@ class Ticket
     }
     public static byte[] makeTicket(string titleID, string titleKey, int titleVersion, bool patchDemo = false, bool patchDLC = false)
     {
-        byte[] ticket = ticketTemplate;
+        byte[] ticket = (byte[])ticketTemplate.Clone();
         byte[] version = new byte[] { (byte)(titleVersion >> 8), (byte)titleVersion };
         byte[] id = StringToByteArray(titleID);
         byte[] key = StringToByteArray(titleKey);
