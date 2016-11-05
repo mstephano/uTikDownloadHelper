@@ -380,7 +380,7 @@ namespace uTikDownloadHelper
         private Nullable<DownloadItem> getDownloadItem(TitleInfo item, DownloadType type)
         {
             TitleInfo info;
-            byte[] ticket = new byte[] { };
+            
             lock (item)
             {
                 info = item;
@@ -396,19 +396,25 @@ namespace uTikDownloadHelper
                             bool madeTicket = false;
                             TMD titleTMD = AsyncHelpers.RunSync<TMD>(() => NUS.DownloadTMD(info.titleID));
 
-                            ticket = info.ticket;
-
                             if (info.ticket.Length == 0 && info.hasTicket)
-                                ticket = AsyncHelpers.RunSync<byte[]>(() => HelperFunctions.DownloadTitleKeyWebsiteTicket(info.titleID));
+                                info.ticket = AsyncHelpers.RunSync<byte[]>(() => HelperFunctions.DownloadTitleKeyWebsiteTicket(info.titleID));
 
                             
                             if (!info.hasTicket && info.titleKey.Length > 0)
                             {
                                 madeTicket = true;
-                                ticket = info.getGeneratedTitleTicket(titleTMD.TitleVersion);
+                                info.ticket = info.getGeneratedTitleTicket(titleTMD.TitleVersion);
                             }
 
-                            return (new DownloadItem(info.displayName + (madeTicket ? " (FakeSign)" : ""), titleTMD, AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(titleTMD, true)), ticket, null, null, madeTicket));
+                            return (new DownloadItem(
+                                info.displayName + (madeTicket ? " (FakeSign)" : ""),
+                                titleTMD,
+                                AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(titleTMD, true)),
+                                info.ticket,
+                                null,
+                                null,
+                                madeTicket
+                            ));
                         }
                         catch { }
                     }
@@ -421,9 +427,15 @@ namespace uTikDownloadHelper
                         {
                             TMD dlcTMD = AsyncHelpers.RunSync<TMD>(() => NUS.DownloadTMD(info.dlcID));
 
-                            ticket = info.getDLCTicket(dlcTMD.TitleVersion);
-
-                            return (new DownloadItem(info.DisplayNameWithVersion(dlcTMD.TitleVersion, "DLC") + " (FakeSign)", dlcTMD, AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(dlcTMD, true)), ticket, null, null, true));
+                            return (new DownloadItem(
+                                info.DisplayNameWithVersion(dlcTMD.TitleVersion, "DLC") + " (FakeSign)",
+                                dlcTMD,
+                                AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(dlcTMD, true)),
+                                info.getDLCTicket(dlcTMD.TitleVersion),
+                                null,
+                                null,
+                                true
+                            ));
                         }
                     }
                     catch { }
@@ -433,7 +445,12 @@ namespace uTikDownloadHelper
                     try
                     {
                         TMD updateTMD = AsyncHelpers.RunSync<TMD>(() => NUS.DownloadTMD(info.updateID));
-                        return (new DownloadItem(info.DisplayNameWithVersion(updateTMD.TitleVersion, "Update"), updateTMD, AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(updateTMD, true)), AsyncHelpers.RunSync<byte[]>(() => NUS.DownloadTicket(info.updateID))));
+                        return (new DownloadItem(
+                            info.DisplayNameWithVersion(updateTMD.TitleVersion, "Update"),
+                            updateTMD,
+                            AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(updateTMD, true)),
+                            AsyncHelpers.RunSync<byte[]>(() => NUS.DownloadTicket(info.updateID))
+                        ));
                     }
                     catch { }
                     break;

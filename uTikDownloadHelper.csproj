@@ -78,6 +78,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\Common.cs" />
+    <Compile Include="Classes\LimitedConcurrencyLevelTaskScheduler.cs" />
     <Compile Include="Classes\SplitStopwatch.cs" />
     <Compile Include="Classes\Ticket.cs" />
     <Compile Include="Forms\DialogTitlePatch.cs">

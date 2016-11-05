@@ -201,55 +201,19 @@ namespace uTikDownloadHelper
         private WebClient client = new WebClient();
         private String[] allowedTitleTypes = { "0000", "000c" };
         public List<TitleInfo> titles = new List<TitleInfo> { };
+
+        private LimitedConcurrencyLevelTaskScheduler scheduler;
+        private TaskFactory factory;
         
+        public TitleList()
+        {
+            scheduler = new LimitedConcurrencyLevelTaskScheduler(8);
+            factory = new TaskFactory(scheduler);
+        }
 
         public List<TitleInfo> filter(String name, String region)
         {
             return titles.Where(title => (title.region == region || region == "Any") && title.name.ToLower().Contains(name.ToLower())).ToList();
-        }
-
-        public void cacheTickets()
-        {
-            var listCopy = titles.ToList();
-
-            for(var i=0; i<8; i++)
-            {
-                Task.Run(async () =>
-                {
-                    while (true)
-                    {
-                        TitleInfo item;
-
-                        lock (listCopy)
-                        {
-                            if (listCopy.Count == 0)
-                                break;
-
-                            item = listCopy[0];
-                            listCopy.Remove(item);
-                        }
-
-                        if (item.hasTicket)
-                        {
-                            try
-                            {
-                                string tikFilePath = Path.Combine(Common.TicketsPath, item.titleID + ".tik");
-                                if (File.Exists(tikFilePath))
-                                {
-                                    item.ticket = File.ReadAllBytes(tikFilePath);
-                                }
-                                else
-                                {
-                                    byte[] ticket = await HelperFunctions.DownloadTitleKeyWebsiteTicket(item.titleID);
-                                    File.WriteAllBytes(tikFilePath, ticket);
-                                    item.ticket = ticket;
-                                }
-                            }
-                            catch { }
-                        }
-                    }
-                });
-            }
         }
 
         public enum TitleListResult
@@ -257,6 +221,28 @@ namespace uTikDownloadHelper
             Online,
             Offline,
             NotFound
+        }
+
+        private async Task cacheTicket(TitleInfo item)
+        {
+            if (item.hasTicket)
+            {
+                try
+                {
+                    string tikFilePath = Path.Combine(Common.TicketsPath, item.titleID + ".tik");
+                    if (File.Exists(tikFilePath))
+                    {
+                        item.ticket = File.ReadAllBytes(tikFilePath);
+                    }
+                    else
+                    {
+                        byte[] ticket = await HelperFunctions.DownloadTitleKeyWebsiteTicket(item.titleID);
+                        File.WriteAllBytes(tikFilePath, ticket);
+                        item.ticket = ticket;
+                    }
+                }
+                catch { }
+            }
         }
 
         public async Task<TitleListResult> getTitleList()
@@ -293,6 +279,14 @@ namespace uTikDownloadHelper
                 {
                     TitleInfo info = new TitleInfo((String)(obj.titleID), (String)(obj.titleKey), (String)(obj.name), (String)(obj.region), "", obj.ticket == "1");
 
+                    if(!info.titleID.StartsWith("0005000e") && info.hasTicket)
+                    {
+                        factory.StartNew(async (o) =>
+                        {
+                            await cacheTicket((TitleInfo)o);
+                        }, info);
+                    }
+
                     if (info.titleID.Length == 16 && allowedTitleTypes.Contains(info.titleID.Substring(4, 4)))
                             titles.Add(info);
                 }
@@ -321,8 +315,6 @@ namespace uTikDownloadHelper
             titles.AddRange(dlc);
 
             titles = titles.OrderBy(o => o.name).ToList();
-
-            cacheTickets();
 
             OnListUpdated();
 
