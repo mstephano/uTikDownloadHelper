@@ -73,6 +73,10 @@
             this.btnDownload.UseVisualStyleBackColor = true;
             this.btnDownload.Click += new System.EventHandler(this.btnDownload_Click);
             // 
+            // fbd
+            // 
+            resources.ApplyResources(this.fbd, "fbd");
+            // 
             // label2
             // 
             resources.ApplyResources(this.label2, "label2");
@@ -109,6 +113,10 @@
             // 
             resources.ApplyResources(this.lblAvgTransferRate, "lblAvgTransferRate");
             this.lblAvgTransferRate.Name = "lblAvgTransferRate";
+            // 
+            // folderDialog
+            // 
+            resources.ApplyResources(this.folderDialog, "folderDialog");
             // 
             // lblDownloadingMetadata
             // 
