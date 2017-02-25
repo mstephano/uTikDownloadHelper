@@ -13,6 +13,12 @@ namespace uTikDownloadHelper
 {
     public partial class frmList : Form
     {
+        public const int COLUMN_INDEX_TITLE_ID = 0;
+        public const int COLUMN_INDEX_DLC = 1;
+        public const int COLUMN_INDEX_NAME = 2;
+        public const int COLUMN_INDEX_REGION = 3;
+        public const int COLUMN_INDEX_SIZE = 4;
+
         TitleList titles = new TitleList();
         String myExe = System.Reflection.Assembly.GetEntryAssembly().Location;
         List<TitleInfo> dataSource = new List<TitleInfo> { };
@@ -39,8 +45,8 @@ namespace uTikDownloadHelper
         private void frmList_SizeChanged(object sender, EventArgs e)
         {
             lstMain.BeginUpdate();
-            lstMain.Columns[4].Width = -1;
-            lstMain.Columns[2].Width = lstMain.Width - lstMain.Columns[0].Width - lstMain.Columns[1].Width - lstMain.Columns[3].Width - lstMain.Columns[4].Width - 4 - SystemInformation.VerticalScrollBarWidth;
+            lstMain.Columns[COLUMN_INDEX_SIZE].Width = -1;
+            lstMain.Columns[COLUMN_INDEX_NAME].Width = lstMain.Width - lstMain.Columns[COLUMN_INDEX_TITLE_ID].Width - lstMain.Columns[COLUMN_INDEX_DLC].Width - lstMain.Columns[COLUMN_INDEX_REGION].Width - lstMain.Columns[COLUMN_INDEX_SIZE].Width - 4 - SystemInformation.VerticalScrollBarWidth;
             lstMain.EndUpdate();
         }
 
@@ -109,7 +115,7 @@ namespace uTikDownloadHelper
                             if (titlesCopy.Count == 0)
                                 break;
                             
-                            item = titlesCopy[0];
+                            item = titlesCopy[COLUMN_INDEX_TITLE_ID];
                             titlesCopy.RemoveAt(0);
                         }
 

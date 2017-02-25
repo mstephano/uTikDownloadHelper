@@ -171,11 +171,11 @@ namespace uTikDownloadHelper
             if (listItem == null)
                 return;
 
-            listItem.SubItems[0].Text = _titleID;
-            listItem.SubItems[1].Text = (dlcKey.Length > 0 ? "X" : "");
-            listItem.SubItems[2].Text = _name.Replace("\n", " ");
-            listItem.SubItems[3].Text = _region;
-            listItem.SubItems[4].Text = _size;
+            listItem.SubItems[frmList.COLUMN_INDEX_TITLE_ID].Text = _titleID;
+            listItem.SubItems[frmList.COLUMN_INDEX_DLC].Text = (dlcKey.Length > 0 ? "X" : "");
+            listItem.SubItems[frmList.COLUMN_INDEX_NAME].Text = _name.Replace("\n", " ");
+            listItem.SubItems[frmList.COLUMN_INDEX_REGION].Text = _region;
+            listItem.SubItems[frmList.COLUMN_INDEX_SIZE].Text = _size;
         }
         public ListViewItem getListViewItem()
         {
@@ -307,7 +307,7 @@ namespace uTikDownloadHelper
                     info.titleKey = "";
                 } else
                 {
-                    existing[0].dlcKey = info.titleKey;
+                    existing[frmList.COLUMN_INDEX_TITLE_ID].dlcKey = info.titleKey;
                     dlc.Remove(info);
                 }
             }
