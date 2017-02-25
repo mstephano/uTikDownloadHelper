@@ -27,6 +27,10 @@ namespace uTikDownloadHelper
         public DialogTitlePatch()
         {
             InitializeComponent();
+
+            this.chkGame.Checked = true;
+            this.chkDLC.Checked = true;
+            this.chkUpdate.Checked = true;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
