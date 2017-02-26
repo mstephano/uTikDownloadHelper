@@ -43,6 +43,7 @@
             this.lblLoading = new System.Windows.Forms.Label();
             this.btnTitleKeyCheck = new System.Windows.Forms.Button();
             this.ofdTik = new System.Windows.Forms.OpenFileDialog();
+            this.update = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // lstMain
@@ -51,6 +52,7 @@
             this.lstMain.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.titleID,
             this.dlc,
+            this.update,
             this.name,
             this.region,
             this.size});
@@ -85,8 +87,8 @@
             // 
             // comboRegion
             // 
-            resources.ApplyResources(this.comboRegion, "comboRegion");
             this.comboRegion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            resources.ApplyResources(this.comboRegion, "comboRegion");
             this.comboRegion.FormattingEnabled = true;
             this.comboRegion.Name = "comboRegion";
             this.comboRegion.SelectedIndexChanged += new System.EventHandler(this.comboRegion_SelectedIndexChanged);
@@ -134,6 +136,10 @@
             resources.ApplyResources(this.ofdTik, "ofdTik");
             this.ofdTik.Multiselect = true;
             // 
+            // update
+            // 
+            resources.ApplyResources(this.update, "update");
+            // 
             // frmList
             // 
             resources.ApplyResources(this, "$this");
@@ -172,5 +178,6 @@
         private System.Windows.Forms.ColumnHeader size;
         private System.Windows.Forms.OpenFileDialog ofdTik;
         private System.Windows.Forms.ColumnHeader dlc;
+        private System.Windows.Forms.ColumnHeader update;
     }
 }

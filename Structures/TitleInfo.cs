@@ -25,6 +25,7 @@ namespace uTikDownloadHelper
         private String _region;
         private String _size;
         private String _dlcKey = "";
+        private String _updateKey = "";
         private ListViewItem listItem;
 
         public String titleID {
@@ -58,6 +59,18 @@ namespace uTikDownloadHelper
             set
             {
                 _dlcKey = value;
+                UpdateListViewItem();
+            }
+        }
+        public String updateKey
+        {
+            get
+            {
+                return _updateKey;
+            }
+            set
+            {
+                _updateKey = value;
                 UpdateListViewItem();
             }
         }
@@ -173,6 +186,7 @@ namespace uTikDownloadHelper
 
             listItem.SubItems[frmList.COLUMN_INDEX_TITLE_ID].Text = _titleID;
             listItem.SubItems[frmList.COLUMN_INDEX_DLC].Text = (dlcKey.Length > 0 ? "X" : "");
+            listItem.SubItems[frmList.COLUMN_INDEX_UPDATE].Text = (updateKey.Length > 0 ? "X" : "");
             listItem.SubItems[frmList.COLUMN_INDEX_NAME].Text = _name.Replace("\n", " ");
             listItem.SubItems[frmList.COLUMN_INDEX_REGION].Text = _region;
             listItem.SubItems[frmList.COLUMN_INDEX_SIZE].Text = _size;
@@ -185,12 +199,18 @@ namespace uTikDownloadHelper
             listItem = new ListViewItem();
             listItem.Text = titleID;
             listItem.SubItems.Add(dlcKey.Length > 0 ? "X" : "");
+            listItem.SubItems.Add(updateKey.Length > 0 ? "X" : "");
             listItem.SubItems.Add(name.Replace("\n", " "));
             listItem.SubItems.Add(region);
             listItem.SubItems.Add(size);
             listItem.Tag = this;
             if(!this.hasTicket)
                 listItem.ForeColor = Color.Red;
+            else
+            {
+                if ((dlcKey.Length > 0 || updateKey.Length > 0) && titleKey.Length == 0)
+                    listItem.ForeColor = Color.Green;
+            }
 
             return listItem;
         }
@@ -199,7 +219,7 @@ namespace uTikDownloadHelper
     public class TitleList 
     {
         private WebClient client = new WebClient();
-        private String[] allowedTitleTypes = { "0000", "000c" };
+        private String[] allowedTitleTypes = { "0000", "000c", "000e" };
         public List<TitleInfo> titles = new List<TitleInfo> { };
 
         private LimitedConcurrencyLevelTaskScheduler scheduler;
@@ -294,9 +314,10 @@ namespace uTikDownloadHelper
 
             
             var dlc = titles.Where(o => o.titleID.Substring(4, 4) == "000c").ToList();
+            var updates = titles.Where(o => o.titleID.Substring(4, 4) == "000e").ToList();
             titles = titles.Where(o => o.titleID.Substring(4, 4) == "0000").ToList();
 
-            foreach(TitleInfo info in dlc.ToArray())
+            foreach (TitleInfo info in dlc.ToArray())
             {
                 TitleInfo[] existing = titles.Where(o => o.titleID == info.gameID).ToArray();
 
@@ -312,7 +333,25 @@ namespace uTikDownloadHelper
                 }
             }
 
+            foreach (TitleInfo info in updates.ToArray())
+            {
+                TitleInfo[] existing = titles.Where(o => o.titleID == info.gameID).ToArray();
+
+                if (existing.Length == 0)
+                {
+                    info.titleID = info.gameID;
+                    info.updateKey = info.titleKey;
+                    info.titleKey = "";
+                }
+                else
+                {
+                    existing[frmList.COLUMN_INDEX_TITLE_ID].updateKey = info.titleKey;
+                    updates.Remove(info);
+                }
+            }
+
             titles.AddRange(dlc);
+            titles.AddRange(updates);
 
             titles = titles.OrderBy(o => o.name).ToList();
 

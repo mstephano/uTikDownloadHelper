@@ -15,9 +15,10 @@ namespace uTikDownloadHelper
     {
         public const int COLUMN_INDEX_TITLE_ID = 0;
         public const int COLUMN_INDEX_DLC = 1;
-        public const int COLUMN_INDEX_NAME = 2;
-        public const int COLUMN_INDEX_REGION = 3;
-        public const int COLUMN_INDEX_SIZE = 4;
+        public const int COLUMN_INDEX_UPDATE = 2;
+        public const int COLUMN_INDEX_NAME = 3;
+        public const int COLUMN_INDEX_REGION = 4;
+        public const int COLUMN_INDEX_SIZE = 5;
 
         TitleList titles = new TitleList();
         String myExe = System.Reflection.Assembly.GetEntryAssembly().Location;
@@ -46,7 +47,7 @@ namespace uTikDownloadHelper
         {
             lstMain.BeginUpdate();
             lstMain.Columns[COLUMN_INDEX_SIZE].Width = -1;
-            lstMain.Columns[COLUMN_INDEX_NAME].Width = lstMain.Width - lstMain.Columns[COLUMN_INDEX_TITLE_ID].Width - lstMain.Columns[COLUMN_INDEX_DLC].Width - lstMain.Columns[COLUMN_INDEX_REGION].Width - lstMain.Columns[COLUMN_INDEX_SIZE].Width - 4 - SystemInformation.VerticalScrollBarWidth;
+            lstMain.Columns[COLUMN_INDEX_NAME].Width = lstMain.Width - lstMain.Columns[COLUMN_INDEX_TITLE_ID].Width - lstMain.Columns[COLUMN_INDEX_DLC].Width - lstMain.Columns[COLUMN_INDEX_UPDATE].Width - lstMain.Columns[COLUMN_INDEX_REGION].Width - lstMain.Columns[COLUMN_INDEX_SIZE].Width - 4 - SystemInformation.VerticalScrollBarWidth;
             lstMain.EndUpdate();
         }
 
@@ -143,8 +144,11 @@ namespace uTikDownloadHelper
                         if(contentSize != "")
                             this.Invoke((MethodInvoker)delegate
                             {
-                                item.size = contentSize;
-                                frmList_SizeChanged(null, null);
+                                if (item.titleKey.Length > 0)
+                                {
+                                    item.size = contentSize;
+                                    frmList_SizeChanged(null, null);
+                                }
                             });
                     }
                 });
@@ -175,7 +179,7 @@ namespace uTikDownloadHelper
         private async void getTitleList()
         {
             var status = await titles.getTitleList();
-            if(status != TitleList.TitleListResult.NotFound)
+            if (status != TitleList.TitleListResult.NotFound)
                 getSizes();
 
             if (status == TitleList.TitleListResult.Offline)
