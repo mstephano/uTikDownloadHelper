@@ -135,6 +135,9 @@
   <data name="Error" xml:space="preserve">
     <value>Error</value>
   </data>
+  <data name="FoldersOnlyCreatedSuccessfully" xml:space="preserve">
+    <value>Folders Only have been created successfully under directory "_temp" in your directory. This is used to compare with your existing downloads.</value>
+  </data>
   <data name="FollowingTitleEnounteredAnError" xml:space="preserve">
     <value>The following title encountered an erorr:</value>
   </data>

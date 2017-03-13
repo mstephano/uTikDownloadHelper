@@ -32,6 +32,7 @@
             this.lstMain = new System.Windows.Forms.ListView();
             this.titleID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.dlc = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.update = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.region = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.size = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -43,7 +44,7 @@
             this.lblLoading = new System.Windows.Forms.Label();
             this.btnTitleKeyCheck = new System.Windows.Forms.Button();
             this.ofdTik = new System.Windows.Forms.OpenFileDialog();
-            this.update = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.btnCompare = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lstMain
@@ -72,6 +73,10 @@
             // dlc
             // 
             resources.ApplyResources(this.dlc, "dlc");
+            // 
+            // update
+            // 
+            resources.ApplyResources(this.update, "update");
             // 
             // name
             // 
@@ -136,14 +141,18 @@
             resources.ApplyResources(this.ofdTik, "ofdTik");
             this.ofdTik.Multiselect = true;
             // 
-            // update
+            // btnCompare
             // 
-            resources.ApplyResources(this.update, "update");
+            resources.ApplyResources(this.btnCompare, "btnCompare");
+            this.btnCompare.Name = "btnCompare";
+            this.btnCompare.UseVisualStyleBackColor = true;
+            this.btnCompare.Click += new System.EventHandler(this.btnCompare_Click);
             // 
             // frmList
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btnCompare);
             this.Controls.Add(this.btnTitleKeyCheck);
             this.Controls.Add(this.lblLoading);
             this.Controls.Add(this.txtSearch);
@@ -179,5 +188,6 @@
         private System.Windows.Forms.OpenFileDialog ofdTik;
         private System.Windows.Forms.ColumnHeader dlc;
         private System.Windows.Forms.ColumnHeader update;
+        private System.Windows.Forms.Button btnCompare;
     }
 }

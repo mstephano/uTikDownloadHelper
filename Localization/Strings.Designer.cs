@@ -115,6 +115,15 @@ namespace uTikDownloadHelper.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Folders Only have been created successfully under directory &quot;_temp&quot; in your directory. This is used to compare with your existing downloads..
+        /// </summary>
+        internal static string FoldersOnlyCreatedSuccessfully {
+            get {
+                return ResourceManager.GetString("FoldersOnlyCreatedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The following title encountered an erorr:.
         /// </summary>
         internal static string FollowingTitleEnounteredAnError {

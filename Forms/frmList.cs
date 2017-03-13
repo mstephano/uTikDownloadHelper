@@ -262,5 +262,16 @@ namespace uTikDownloadHelper
                 getTitleList();
             }
         }
+
+        private void btnCompare_Click(object sender, EventArgs e)
+        {
+            var list = new List<TitleInfo> { };
+            foreach (ListViewItem item in lstMain.SelectedItems)
+            {
+                list.Add(((TitleInfo)item.Tag));
+            }
+
+            frmDownload.OpenDownloadForm(list, true);
+        }
     }
 }

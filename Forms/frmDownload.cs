@@ -16,6 +16,7 @@ namespace uTikDownloadHelper
     {
         public struct DownloadItem
         {
+            public readonly DownloadType type;
             public readonly byte[] ticket;
             public readonly TMD tmd;
             public readonly string name;
@@ -23,8 +24,9 @@ namespace uTikDownloadHelper
             public readonly string absolutePath;
             public object tag;
             public bool madeTicket;
-            public DownloadItem(string name, TMD tmd, NUS.UrlFilenamePair[] URLs, byte[] ticket, string absolutePath = null, object tag = null, bool madeTicket = false)
+            public DownloadItem(DownloadType type, string name, TMD tmd, NUS.UrlFilenamePair[] URLs, byte[] ticket, string absolutePath = null, object tag = null, bool madeTicket = false)
             {
+                this.type = type;
                 this.name = name;
                 this.tmd = tmd;
                 this.ticket = ticket;
@@ -62,6 +64,7 @@ namespace uTikDownloadHelper
         private long dataToDownload;
         private long completeFileDataDownloaded;
         private FileInfo CurrentFile;
+        private static bool _createFolderOnly = false;
         public frmDownload()
         {
             InitializeComponent();
@@ -93,7 +96,7 @@ namespace uTikDownloadHelper
             AppDomain.CurrentDomain.DoCallBack(() =>
             {
                 frmDownload frm = new frmDownload();
-                frm.DownloadQueue.Add(new DownloadItem(tmd.TitleID, tmd, URLs, new byte[] { }, info.DirectoryName));
+                frm.DownloadQueue.Add(new DownloadItem(DownloadType.None, tmd.TitleID, tmd, URLs, new byte[] { }, info.DirectoryName));
                 frm.AutoClose = autoClose;
                 frm.DownloadPath = info.DirectoryName;
                 frm.lblDownloadingMetadata.Dispose();
@@ -101,8 +104,10 @@ namespace uTikDownloadHelper
             });
         }
 
-        public static void OpenDownloadForm(List<TitleInfo> list)
+        public static void OpenDownloadForm(List<TitleInfo> list, bool createFolderOnly = false)
         {
+            _createFolderOnly = createFolderOnly;
+
             Action<DialogTitlePatch.Result> openDownload = (DialogTitlePatch.Result e) =>
             {
                 AppDomain.CurrentDomain.DoCallBack(() =>
@@ -374,7 +379,7 @@ namespace uTikDownloadHelper
             }
             if(DownloadQueue.Count > 0 || AutoClose)
             {
-                ProcessDownloadQueue(DownloadQueue.ToArray());
+                ProcessDownloadQueue(DownloadQueue.ToArray(), _createFolderOnly);
             }
         }
         private Nullable<DownloadItem> getDownloadItem(TitleInfo item, DownloadType type)
@@ -407,6 +412,7 @@ namespace uTikDownloadHelper
                             }
 
                             return (new DownloadItem(
+                                type,
                                 info.displayName + (madeTicket ? " (FakeSign)" : ""),
                                 titleTMD,
                                 AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(titleTMD, true)),
@@ -428,6 +434,7 @@ namespace uTikDownloadHelper
                             TMD dlcTMD = AsyncHelpers.RunSync<TMD>(() => NUS.DownloadTMD(info.dlcID));
 
                             return (new DownloadItem(
+                                type,
                                 info.DisplayNameWithVersion(dlcTMD.TitleVersion, "DLC") + " (FakeSign)",
                                 dlcTMD,
                                 AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(dlcTMD, true)),
@@ -446,6 +453,7 @@ namespace uTikDownloadHelper
                     {
                         TMD updateTMD = AsyncHelpers.RunSync<TMD>(() => NUS.DownloadTMD(info.updateID));
                         return (new DownloadItem(
+                            type,
                             info.DisplayNameWithVersion(updateTMD.TitleVersion, "Update"),
                             updateTMD,
                             AsyncHelpers.RunSync<NUS.UrlFilenamePair[]>(() => NUS.GetTitleContentURLs(updateTMD, true)),
@@ -458,7 +466,7 @@ namespace uTikDownloadHelper
             return null;
         }
 
-        private async void ProcessDownloadQueue(DownloadItem[] items)
+        private async void ProcessDownloadQueue(DownloadItem[] items, bool createListPath = false)
         {
             if(DownloadPath == null)
             {
@@ -481,97 +489,130 @@ namespace uTikDownloadHelper
             bool shellExecute = Common.Settings.shellExecute;
 
             btnDownload.Enabled = false;
-            foreach(DownloadItem title in DownloadQueue)
+
+            if (createListPath == false)
             {
-                count++;
-                completeFileDataDownloaded = 0;
-                this.Text = "(" + count + "/" + DownloadQueue.Count + ")" + title.name;
-                dataDownloadedSinceLastTick = 0;
-                dataToDownload = title.tmd.TitleContentSize;
-
-                var itemPath = HelperFunctions.GetAutoIncrementedDirectory(basePath, title.name, "title.tmd", HelperFunctions.md5sum(title.tmd.rawBytes));
-
-                if (title.absolutePath != null)
-                    itemPath = title.absolutePath;
-
-                if(!Directory.Exists(itemPath))
-                   Directory.CreateDirectory(itemPath);
-
-                byte[] ticket = (title.ticket != null ? title.ticket : new byte[] { });
-
-                File.WriteAllBytes(Path.Combine(itemPath, "title.tmd"), title.tmd.rawBytes);
-
-                if (ticket.Length > 0)
+                foreach (DownloadItem title in items)
                 {
-                    if (title.tmd.TitleID.ToLower()[7] != "e"[0])
-                        HelperFunctions.patchTicket(ref ticket);
+                    count++;
+                    completeFileDataDownloaded = 0;
+                    this.Text = "(" + count + "/" + items.Length + ")" + title.name;
+                    dataDownloadedSinceLastTick = 0;
+                    dataToDownload = title.tmd.TitleContentSize;
 
-                    File.WriteAllBytes(Path.Combine(itemPath, "title.tik"), ticket);
-                }
+                    var itemPath = HelperFunctions.GetAutoIncrementedDirectory(basePath, title.name, "title.tmd", HelperFunctions.md5sum(title.tmd.rawBytes));
 
-                if(!File.Exists(Path.Combine(itemPath, "title.cert")))
-                    File.WriteAllBytes(Path.Combine(itemPath, "title.cert"), NUS.TitleCert);
+                    if (title.absolutePath != null)
+                        itemPath = title.absolutePath;
 
-                DownloadPath = itemPath;
-                bool error = false;
-                stopwatch1.Restart();
-                stopwatch2.Restart();
-                foreach (var url in title.URLs)
-                {
-                    string filePath = Path.Combine(itemPath, url.Filename);
-                    if (!File.Exists(filePath))
-                        File.Create(filePath).Close();
+                    if (!Directory.Exists(itemPath))
+                        Directory.CreateDirectory(itemPath);
 
-                    CurrentFile = new FileInfo(filePath);
-                    lblCurrentFile.Text = url.Filename;
-                    for (var i = 0; i < Common.Settings.downloadTries; i++)
+                    byte[] ticket = (title.ticket != null ? title.ticket : new byte[] { });
+
+                    File.WriteAllBytes(Path.Combine(itemPath, "title.tmd"), title.tmd.rawBytes);
+
+                    if (ticket.Length > 0)
                     {
-                        int exitCode = await Task.Run(() => {
+                        if (title.tmd.TitleID.ToLower()[7] != "e"[0])
+                            HelperFunctions.patchTicket(ref ticket);
 
-                            var procStIfo = new ProcessStartInfo();
-                            procStIfo.FileName = Program.ResourceFiles.wget;
-                            procStIfo.Arguments = HelperFunctions.escapeCommandArgument(url.URL) + " -c -O " + HelperFunctions.escapeCommandArgument(filePath);
-                            procStIfo.UseShellExecute = shellExecute;
-                            procStIfo.CreateNoWindow = hideWget;
-
-                            if (shellExecute == true && hideWget == false)
-                                procStIfo.WindowStyle = ProcessWindowStyle.Minimized;
-
-                            runningProcess = new Process();
-                            runningProcess.StartInfo = procStIfo;
-                            runningProcess.Start();
-                            runningProcess.WaitForExit();
-                            return runningProcess.ExitCode;
-                        });
-
-                        if(!isClosing)
-                            error = (exitCode != 0);
-
-                        if (isClosing || exitCode == 0)
-                            break;
+                        File.WriteAllBytes(Path.Combine(itemPath, "title.tik"), ticket);
                     }
 
-                    if (isClosing || error)
+                    if (!File.Exists(Path.Combine(itemPath, "title.cert")))
+                        File.WriteAllBytes(Path.Combine(itemPath, "title.cert"), NUS.TitleCert);
+
+                    DownloadPath = itemPath;
+                    bool error = false;
+                    stopwatch1.Restart();
+                    stopwatch2.Restart();
+                    foreach (var url in title.URLs)
+                    {
+                        string filePath = Path.Combine(itemPath, url.Filename);
+                        if (!File.Exists(filePath))
+                            File.Create(filePath).Close();
+
+                        CurrentFile = new FileInfo(filePath);
+                        lblCurrentFile.Text = url.Filename;
+                        for (var i = 0; i < Common.Settings.downloadTries; i++)
+                        {
+                            int exitCode = await Task.Run(() => {
+
+                                var procStIfo = new ProcessStartInfo();
+                                procStIfo.FileName = Program.ResourceFiles.wget;
+                                procStIfo.Arguments = HelperFunctions.escapeCommandArgument(url.URL) + " -c -O " + HelperFunctions.escapeCommandArgument(filePath);
+                                procStIfo.UseShellExecute = shellExecute;
+                                procStIfo.CreateNoWindow = hideWget;
+
+                                if (shellExecute == true && hideWget == false)
+                                    procStIfo.WindowStyle = ProcessWindowStyle.Minimized;
+
+                                runningProcess = new Process();
+                                runningProcess.StartInfo = procStIfo;
+                                runningProcess.Start();
+                                runningProcess.WaitForExit();
+                                return runningProcess.ExitCode;
+                            });
+
+                            if (!isClosing)
+                                error = (exitCode != 0);
+
+                            if (isClosing || exitCode == 0)
+                                break;
+                        }
+
+                        if (isClosing || error)
+                            break;
+
+
+                        progressTimer_Tick(null, null);
+                        CurrentFile.Refresh();
+                        completeFileDataDownloaded += CurrentFile.Length;
+                    }
+                    if (error || isClosing)
+                    {
+                        progressTimer.Enabled = false;
+                        if (title.absolutePath == null)
+                            if (error || MessageBox.Show(Localization.Strings.DeleteIncompleteFilesQuestion, Localization.Strings.IncompleteFiles, MessageBoxButtons.YesNo) == DialogResult.Yes)
+                                Directory.Delete(itemPath, true);
+
+                        if (!isClosing)
+                            errors.Add(title.name);
+                    }
+                    if (isClosing)
                         break;
-
-
-                    progressTimer_Tick(null, null);
-                    CurrentFile.Refresh();
-                    completeFileDataDownloaded += CurrentFile.Length;
                 }
-                if (error || isClosing)
-                {
-                    progressTimer.Enabled = false;
-                    if(title.absolutePath == null)
-                        if(error || MessageBox.Show(Localization.Strings.DeleteIncompleteFilesQuestion, Localization.Strings.IncompleteFiles, MessageBoxButtons.YesNo) == DialogResult.Yes)
-                            Directory.Delete(itemPath, true);
-
-                    if (!isClosing)
-                        errors.Add(title.name);
-                }
-                if (isClosing)
-                    break;
             }
+            else
+            {
+                string basePathTemp = Path.Combine(basePath, "_temp");
+                if (!Directory.Exists(basePathTemp))
+                    Directory.CreateDirectory(basePathTemp);
+                System.IO.DirectoryInfo di = new DirectoryInfo(basePathTemp);
+                foreach (DirectoryInfo dir in di.GetDirectories())
+                {
+                    dir.Delete(true);
+                }
+
+                foreach (DownloadItem title in items)
+                {
+                    count++;
+                    this.Text = "(" + count + "/" + items.Length + ")" + title.name;
+
+                    var itemPath = HelperFunctions.GetAutoIncrementedDirectory(basePathTemp, title.name, "title.tmd", HelperFunctions.md5sum(title.tmd.rawBytes));
+
+                    if (title.absolutePath != null)
+                        itemPath = title.absolutePath;
+
+                    if (title.type != DownloadType.Game || (title.type == DownloadType.Game && title.ticket.Length > 0))
+                    {
+                        if (!Directory.Exists(itemPath))
+                            Directory.CreateDirectory(itemPath);
+                    }
+                }
+            }
+            
             progressTimer.Enabled = false;
             stopwatch1.Stop();
             stopwatch2.Stop();
@@ -583,7 +624,14 @@ namespace uTikDownloadHelper
                 MessageBox.Show((errors.Count > 1 ? Localization.Strings.FollowingTitlesEncounteredAnErorr : Localization.Strings.FollowingTitleEnounteredAnError) + "\n\n" + String.Join("\n", errors.ToArray()), Localization.Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else
             {
-                MessageBox.Show(Localization.Strings.DownloadsCompletedSuccessfully, Localization.Strings.Success);
+                if (createListPath == false)
+                {
+                    MessageBox.Show(Localization.Strings.DownloadsCompletedSuccessfully, Localization.Strings.Success);
+                }
+                else
+                {
+                    MessageBox.Show(Localization.Strings.FoldersOnlyCreatedSuccessfully, Localization.Strings.Success);
+                }
             }
             btnDownload.Enabled = true;
             if (AutoClose && !isClosing)
